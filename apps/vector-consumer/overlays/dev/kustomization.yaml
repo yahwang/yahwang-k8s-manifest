@@ -4,3 +4,4 @@ namePrefix: dev-
 
 resources:
   - ./aggregator-patch.yaml
+  - ./pipeline.yaml

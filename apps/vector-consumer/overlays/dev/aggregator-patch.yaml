@@ -16,6 +16,16 @@ spec:
       value: "INFO"
     - name: VECTOR_GRACEFUL_SHUTDOWN_LIMIT_SECS
       value: "180"
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: minio-secret
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: minio-secret
+          key: AWS_SECRET_ACCESS_KEY      
   api:
     enabled: true
   resources:

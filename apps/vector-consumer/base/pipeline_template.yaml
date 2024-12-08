@@ -20,6 +20,11 @@ spec:
       inputs: ["kafka_source"]
       type: remap
       source: |
+        del(.topic)
+        del(.source_type)
+        del(.partition)
+        del(.offset)
+        del(.headers)
         . = encode_json(.)  # 이벤트를 JSON 문자열로 인코딩
         
   sinks:
@@ -28,13 +33,18 @@ spec:
       inputs: ["format_json"]
       bucket: "vector-test"
       endpoint: "http://common-minio-hl.common.svc.cluster.local:9000"  # MinIO endpoint
-      region: "yahwang"
+      region: "ap-northeast-2"
       key_prefix: "logs/dt=%Y-%m-%d/"
       filename_append_uuid: true
       filename_time_format: "%s"
       compression: "none"
       encoding:
         codec: "text"
+      
+      # S3 인증
+      # auth:
+        # access_key_id: ""
+        # secret_access_key: ""
       
       # 버퍼 설정
       buffer:
