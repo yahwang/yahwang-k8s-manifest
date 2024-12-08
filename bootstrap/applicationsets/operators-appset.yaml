@@ -14,10 +14,9 @@ spec:
             elements:
               - env: dev
                 server: https://kubernetes.default.svc
-                helm:
-                  repo: https://kaasops.github.io/vector-operator/helm
-                  chart: vector-operator
-                  version: "0.3"
+                chart_repo: https://kaasops.github.io/vector-operator/helm
+                chart_name: vector-operator
+                chart_version: "0.3"
   template:
     metadata:
       name: "{{env}}-{{operator}}"
@@ -27,9 +26,9 @@ spec:
         - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
           targetRevision: HEAD
           ref: values
-        - repoURL: "{{helm.repo}}"
-          targetRevision: "{{helm.version}}"
-          chart: "{{helm.chart}}"
+        - repoURL: "{{chart_repo}}"
+          targetRevision: "{{chart_version}}"
+          chart: "{{chart_name}}"
           helm:
             valueFiles:
               - $values/cluster-config/overlays/operators/{{operator}}/{{env}}/values-override.yaml
