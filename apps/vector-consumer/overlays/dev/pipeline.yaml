@@ -38,9 +38,9 @@ spec:
       
       # 버퍼 설정
       buffer:
-        type: "disk"
+        type: "memory"
+        max_events: 500
         when_full: "block"
-        max_size: 268435488  # 100MB
       
       # 배치 설정
       batch:

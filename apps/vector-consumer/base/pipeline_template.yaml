@@ -35,6 +35,8 @@ spec:
       endpoint: "http://common-minio-hl.common.svc.cluster.local:9000"  # MinIO endpoint
       region: "ap-northeast-2"
       key_prefix: "logs/dt=%Y-%m-%d/"
+      acknowledgements:
+        enabled: true  # ACK 활성화
       filename_append_uuid: true
       filename_time_format: "%s"
       compression: "none"
@@ -48,9 +50,9 @@ spec:
       
       # 버퍼 설정
       buffer:
-        type: "disk"
+        type: "disk" # memory
         when_full: "block"
-        max_size: 268435488  # 100MB
+        max_size: 268435488  # disk 사용 시
       
       # 배치 설정
       batch:
