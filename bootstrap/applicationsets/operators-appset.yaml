@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-operators
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+        - list:
+            elements:
+              - operator: vector-operator
+        - list:
+            elements:
+              - env: dev
+                server: https://kubernetes.default.svc
+                helm:
+                  repo: https://kaasops.github.io/vector-operator/helm
+                  chart: vector-operator
+                  version: "0.3"
+  template:
+    metadata:
+      name: "{{env}}-{{operator}}"
+    spec:
+      project: cluster-config
+      sources:
+        - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
+          targetRevision: HEAD
+          ref: values
+        - repoURL: "{{helm.repo}}"
+          targetRevision: "{{helm.version}}"
+          chart: "{{helm.chart}}"
+          helm:
+            valueFiles:
+              - $values/cluster-config/overlays/operators/{{operator}}/{{env}}/values-override.yaml
+      destination:
+        server: "{{server}}"
+        namespace: operator-system
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
