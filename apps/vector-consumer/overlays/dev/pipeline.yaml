@@ -30,6 +30,8 @@ spec:
       endpoint: "http://common-minio-hl.common.svc.cluster.local:9000"  # MinIO endpoint
       region: "yahwang"
       key_prefix: "logs/dt=%Y-%m-%d/"
+      acknowledgements:
+        enabled: true  # ACK 활성화
       filename_append_uuid: true
       filename_time_format: "%s"
       compression: "none"
