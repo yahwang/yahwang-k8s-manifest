@@ -1,0 +1,29 @@
+apiVersion: observability.kaasops.io/v1alpha1
+kind: ClusterVectorAggregator
+metadata:
+  name: vector-aggregator
+  labels:
+    vector-role: vector-consumer
+spec:
+  resourceNamespace: platform
+  # image: 
+  # imagePullSecrets:
+  # - name: docker-registry
+  replicas: 1
+  dataDir: /vector-data-dir
+  env:
+    - name: VECTOR_THREADS
+      value: "1"
+    - name: VECTOR_LOG
+      value: "INFO"
+    - name: VECTOR_GRACEFUL_SHUTDOWN_LIMIT_SECS
+      value: "180"
+  api:
+    enabled: true
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "0.2"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
