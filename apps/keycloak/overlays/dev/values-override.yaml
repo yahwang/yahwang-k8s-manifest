@@ -1,0 +1,196 @@
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  defaultStorageClass: ""
+  storageClass: ""
+  compatibility:
+    openshift:
+      adaptSecurityContext: auto
+## @section Common parameters
+##
+
+clusterDomain: cluster.local
+extraDeploy: []
+diagnosticMode:
+  enabled: false
+  command:
+    - sleep
+  args:
+    - infinity
+## @section Keycloak parameters
+
+image:
+  registry: docker.io
+  repository: bitnami/keycloak
+  tag: 26.0.6-debian-12-r0
+  digest: ""
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+  debug: false
+## Keycloak authentication parameters
+## ref: https://github.com/bitnami/containers/tree/main/bitnami/keycloak#admin-credentials
+##
+auth:
+  adminUser: admin
+  adminPassword: ""
+  existingSecret: "keycloak-admin-secret"
+  passwordSecretKey: "password"
+  annotations: {}
+## Custom Certificates
+## @param customCaExistingSecret Name of the secret containing the Keycloak custom CA certificates. The secret will be mounted as a directory and configured using KC_TRUSTSTORE_PATHS.
+## https://www.keycloak.org/server/keycloak-truststore
+## Could be created like this: kubectl create secret generic secretName --from-file=./certificateToMerge.pem
+customCaExistingSecret: ""
+## HTTPS settings
+## ref: https://github.com/bitnami/containers/tree/main/bitnami/keycloak#tls-encryption
+##
+tls:
+  enabled: false
+
+## @param adminRealm Name of the admin realm
+##
+adminRealm: "master"
+## @param production Run Keycloak in production mode. TLS configuration is required except when using proxy=edge.
+##
+production: false
+## @param proxyHeaders Set Keycloak proxy headers
+##
+## nginx ingress https를 사용하는 경우, 설정해야 admin console로 접근 가능
+proxyHeaders: "xforwarded"
+## @param proxy reverse Proxy mode edge, reencrypt, passthrough or none
+## DEPRECATED: use proxyHeaders instead
+## ref: https://www.keycloak.org/server/reverseproxy
+##
+proxy: ""
+## @param replicaCount Number of Keycloak replicas to deploy
+##
+replicaCount: 1
+## @param revisionHistoryLimitCount Number of controller revisions to keep
+##
+containerPorts:
+  http: 8080
+  https: 8443
+  metrics: 9000
+resourcesPreset: "small"
+
+## Service configuration
+##
+service:
+  ## @param service.type Kubernetes service type
+  ##
+  type: ClusterIP
+  ## @param service.http.enabled Enable http port on service
+  ##
+  http:
+    enabled: true
+  ## @param service.ports.http Keycloak service HTTP port
+  ## @param service.ports.https Keycloak service HTTPS port
+  ##
+  ports:
+    http: 80
+    https: 443
+  ## @param service.nodePorts [object] Specify the nodePort values for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+
+## Keycloak ingress parameters
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  enabled: true
+  ingressClassName: "nginx"
+  pathType: Prefix
+  apiVersion: ""
+  ## @param ingress.controller The ingress controller type. Currently supports `default` and `gce`
+  ## leave as `default` for most ingress controllers.
+  ## set to `gce` if using the GCE ingress controller
+  ##
+  controller: default
+  ## @param ingress.hostname Default host for the ingress record (evaluated as template)
+  ##
+  hostname: keycloak.yahwang.site
+  hostnameStrict: false
+  path: "{{ .Values.httpRelativePath }}"
+  servicePort: http
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  labels: {}
+  tls: false
+  selfSigned: false
+  extraHosts: []
+  extraPaths: []
+  extraTls:
+      - hosts:
+        - keycloak.yahwang.site
+        secretName: keycloak-letsencrypt-tls
+ 
+  extraRules: []
+## Keycloak admin ingress parameters
+## ref: https://kubernetes.io/docs/user-guide/ingress/
+##
+adminIngress:
+  ## @param adminIngress.enabled Enable admin ingress record generation for Keycloak
+  ##
+  enabled: false
+
+
+## Metrics configuration
+##
+metrics:
+  ## @param metrics.enabled Enable exposing Keycloak statistics
+  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/keycloak#enabling-statistics
+  ##
+  enabled: false
+
+## @section keycloak-config-cli parameters
+
+## Configuration for keycloak-config-cli
+## ref: https://github.com/adorsys/keycloak-config-cli
+##
+keycloakConfigCli:
+  ## @param keycloakConfigCli.enabled Whether to enable keycloak-config-cli job
+  ##
+  enabled: false
+
+## @section Database parameters
+
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: "common-postgres-rw.common.svc"
+  port: 5432
+  user: postgres
+  database: keycloak
+  password: ""
+  existingSecret: "common-postgres-superuser"
+  existingSecretHostKey: ""
+  existingSecretPortKey: ""
+  existingSecretUserKey: ""
+  existingSecretDatabaseKey: ""
+  existingSecretPasswordKey: "password"
+  annotations: {}
+## @section Keycloak Cache parameters
+
+## Keycloak cache configuration
+## ref: https://www.keycloak.org/server/caching
+## @param cache.enabled Switch to enable or disable the keycloak distributed cache for kubernetes.
+## NOTE: Set to false to use 'local' cache (only supported when replicaCount=1).
+## @param cache.stackName Set infinispan cache stack to use
+## @param cache.stackFile Set infinispan cache stack filename to use
+##
+cache:
+  enabled: true
+  stackName: kubernetes
+  stackFile: ""
+## @section Keycloak Logging parameters
+
+## Keycloak logging configuration
+## ref: https://www.keycloak.org/server/logging
+## @param logging.output Alternates between the default log output format or json format
+## @param logging.level Allowed values as documented: FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL, OFF
+##
+logging:
+  output: default
+  level: INFO

@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: keycloak
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            server: https://kubernetes.default.svc
+            chart_repo: registry-1.docker.io/bitnamicharts
+            chart_name: keycloak
+            chart_version: "24.2.2"
+        
+  template:
+    metadata:
+      name: "{{env}}-keycloak"
+    spec:
+      project: common
+      sources:
+        - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
+          targetRevision: HEAD
+          ref: values
+        - repoURL: "{{chart_repo}}"
+          targetRevision: "{{chart_version}}"
+          chart: "{{chart_name}}"
+          helm:
+            valueFiles:
+              - $values/apps/keycloak/overlays/{{env}}/values-override.yaml
+      destination:
+        server: "{{server}}"
+        namespace: common
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
