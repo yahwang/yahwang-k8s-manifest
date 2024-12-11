@@ -5,18 +5,20 @@ metadata:
   namespace: argocd
 spec:
   generators:
-    - matrix:
-        generators:
-        - list:
-            elements:
-              - operator: vector-operator
-        - list:
-            elements:
-              - env: dev
-                server: https://kubernetes.default.svc
-                chart_repo: https://kaasops.github.io/vector-operator/helm
-                chart_name: vector-operator
-                chart_version: "0.3"
+    - list:
+        elements:
+          - operator: vector-operator
+            env: dev
+            server: https://kubernetes.default.svc
+            chart_repo: https://kaasops.github.io/vector-operator/helm
+            chart_name: vector-operator
+            chart_version: "0.3"
+          - operator: eck-operator
+            env: dev
+            server: https://kubernetes.default.svc
+            chart_repo: https://helm.elastic.co
+            chart_name: eck-operator
+            chart_version: "2.14.0"
   template:
     metadata:
       name: "{{env}}-{{operator}}"
