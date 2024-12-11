@@ -10,7 +10,11 @@ yahwang-k8s-manifest/
 │   └── applicationsets # cluster-config 배포
 ├── cluster-config
 │   └── base
-│   │   └── operators   # operator 관리 
+│   └── overlays
+│   │   └── operators   # operator 관리
+│   │   └── ingress-nginx
+│   │   └── harbor
+│   │   └── keycloak
 │   └── secrets         # secret template 저장
 └── components
 │   └── applicationsets # apps 배포

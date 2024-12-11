@@ -30,6 +30,9 @@ externalURL: https://harbor.yahwang.site # http 혹은 https를 붙임
 
 existingSecretAdminPassword: harbor-admin-secret
 
+internalTLS:
+  enabled: false
+
 database:
   type: external
   external:

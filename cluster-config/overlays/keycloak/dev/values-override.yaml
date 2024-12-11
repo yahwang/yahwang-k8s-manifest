@@ -164,7 +164,7 @@ externalDatabase:
   user: postgres
   database: keycloak
   password: ""
-  existingSecret: "common-postgres-superuser"
+  existingSecret: "postgres-secret"
   existingSecretHostKey: ""
   existingSecretPortKey: ""
   existingSecretUserKey: ""
