@@ -1,0 +1,45 @@
+expose:
+  type: ingress
+  tls:
+    enabled: true
+    certSource: secret
+    secret:
+      secretName: harbor-letsencrypt-tls
+  ingress:
+    hosts:
+      core: harbor.yahwang.site
+    controller: default
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
+persistence:
+  enabled: false
+  imageChartStorage:
+    disableredirect: true
+    type: s3
+    s3:
+      existingSecret: harbor-s3-secret
+      region: yahwang
+      bucket: harbor-image
+      regionendpoint: http://minio.common.svc.cluster.local:80
+
+externalURL: https://harbor.yahwang.site # http 혹은 https를 붙임
+
+existingSecretAdminPassword: harbor-admin-secret
+
+database:
+  type: external
+  external:
+    host: "common-postgres-rw.common.svc.cluster.local"
+    port: "5432"
+    username: "postgres"
+    existingSecret: "postgres-secret"
+    coreDatabase: "harbor"
+
+redis:
+  type: external
+  external:
+    addr: "redis-master.common.svc.cluster.local:6379"

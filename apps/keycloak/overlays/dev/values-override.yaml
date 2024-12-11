@@ -121,9 +121,9 @@ ingress:
   extraHosts: []
   extraPaths: []
   extraTls:
-      - hosts:
-        - keycloak.yahwang.site
-        secretName: keycloak-letsencrypt-tls
+    - hosts:
+      - keycloak.yahwang.site
+      secretName: keycloak-letsencrypt-tls
  
   extraRules: []
 ## Keycloak admin ingress parameters
