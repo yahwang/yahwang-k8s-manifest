@@ -1,12 +1,13 @@
 controller:
   name: controller
-  kind: DaemonSet
+  kind: Deployment # DaemonSet의 경우는 leader / follower 형태로 운영되는 구조라 
+  replicaCount: 1
   ingressClassResource:
     name: nginx
     enabled: true
   ingressClass: nginx
-  extraArgs:
-    enable-ssl-passthrough: true # 기능 활성화 / 실제는 annotation에서 동작
+  # extraArgs:
+    # enable-ssl-passthrough: true
   service:
     annotations:
       metallb.universe.tf/loadBalancerIPs: 172.30.1.101
