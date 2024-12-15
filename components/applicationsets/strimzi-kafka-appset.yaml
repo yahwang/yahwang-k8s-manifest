@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: strimzi-kafka
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            server: https://kubernetes.default.svc
+
+  template:
+    metadata:
+      name: "{{env}}-strimzi-kafka"
+    spec:
+      project: common
+      sources:
+        - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
+          targetRevision: HEAD
+          path: apps/strimzi-kafka/overlays/{{env}}
+      destination:
+        server: "{{server}}"
+        namespace: common
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

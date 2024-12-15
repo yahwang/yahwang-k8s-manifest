@@ -1,0 +1,26 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: dev-pool-default
+  namespace: common
+  labels:
+    strimzi.io/cluster: dev-common-kafka
+spec:
+  replicas: 2
+  roles:
+    - controller
+    - broker
+  resources: 
+    requests:
+      memory: 1Gi
+    limits:
+      memory: 2Gi
+  jvmOptions:
+    -Xms: 512m
+    -Xmx: 512m
+  storage:
+    type: persistent-claim
+    class: longhorn
+    size: 10Gi
+    deleteClaim: false
+    kraftMetadata: shared

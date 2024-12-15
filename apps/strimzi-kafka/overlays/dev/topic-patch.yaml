@@ -1,0 +1,27 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: default-topic
+  namespace: common
+  labels:
+    strimzi.io/cluster: dev-common-kafka
+spec:
+  topicName: default-topic
+  partitions: 2
+  replicas: 2
+  config:
+    retention.ms: 518400000
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: vector-test
+  namespace: common
+  labels:
+    strimzi.io/cluster: dev-common-kafka
+spec:
+  topicName: vector-test
+  partitions: 2
+  replicas: 2
+  config:
+    retention.ms: 518400000
