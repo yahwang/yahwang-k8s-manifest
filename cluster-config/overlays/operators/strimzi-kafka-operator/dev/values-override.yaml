@@ -1,0 +1,4 @@
+
+
+watchNamespaces: ["common"]
+watchAnyNamespace: false
