@@ -4,7 +4,7 @@ metadata:
   name: dev-pool-default
   namespace: common
   labels:
-    strimzi.io/cluster: dev-common-kafka
+    strimzi.io/cluster: dev-kafka-cluster
 spec:
   replicas: 2
   roles:

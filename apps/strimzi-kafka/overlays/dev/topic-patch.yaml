@@ -4,7 +4,7 @@ metadata:
   name: default-topic
   namespace: common
   labels:
-    strimzi.io/cluster: dev-common-kafka
+    strimzi.io/cluster: dev-kafka-cluster
 spec:
   topicName: default-topic
   partitions: 2
@@ -18,7 +18,7 @@ metadata:
   name: vector-test
   namespace: common
   labels:
-    strimzi.io/cluster: dev-common-kafka
+    strimzi.io/cluster: dev-kafka-cluster
 spec:
   topicName: vector-test
   partitions: 2

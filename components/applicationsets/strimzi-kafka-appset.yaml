@@ -24,8 +24,8 @@ spec:
         server: "{{server}}"
         namespace: common
       syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
+        # automated:
+          # prune: true
+          # selfHeal: true
         syncOptions:
           - CreateNamespace=true
