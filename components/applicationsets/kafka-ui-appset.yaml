@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: strimzi-kafka
+  name: kafka-ui
   namespace: argocd
 spec:
   generators:
@@ -10,16 +10,25 @@ spec:
         elements:
           - env: dev
             server: https://kubernetes.default.svc
+            chart_repo: https://provectus.github.io/kafka-ui-charts
+            chart_name: kafka-ui
+            chart_version: "0.7.6"
 
   template:
     metadata:
-      name: "{{env}}-strimzi-kafka"
+      name: "{{env}}-kafka-ui"
     spec:
       project: common
       sources:
         - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
           targetRevision: HEAD
-          path: apps/strimzi-kafka/overlays/{{env}}
+          ref: values
+        - repoURL: "{{chart_repo}}"
+          targetRevision: "{{chart_version}}"
+          chart: "{{chart_name}}"
+          helm:
+            valueFiles:
+              - $values/apps/kafka-ui/overlays/{{env}}/values-override.yaml
       destination:
         server: "{{server}}"
         namespace: common
