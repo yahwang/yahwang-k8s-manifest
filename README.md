@@ -16,6 +16,7 @@ yahwang-k8s-manifest/
 │   │   └── harbor
 │   │   └── keycloak
 │   └── secrets         # secret template 저장
+│   └── pvcs            # 볼륨 고정을 위한 pvc 미리 생성
 └── components
 │   └── applicationsets # apps 배포
 ```

@@ -1,0 +1,81 @@
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  defaultStorageClass: "longhorn"
+  redis:
+    password: ""
+
+# image:
+  # registry: docker.io
+  # repository: bitnami/redis
+  # tag: 7.4.1-debian-12-r3
+  # debug: false
+
+architecture: replication
+
+auth:
+  enabled: false
+  # existingSecret: "redis-secret"
+  # existingSecretPasswordKey: "password"
+
+# REDIS 데이터 디스크 저장 및 복구
+commonConfiguration: |-
+  # Enable AOF https://redis.io/topics/persistence#append-only-file
+  appendonly yes
+  # Disable RDB persistence, AOF persistence already enabled.
+  save ""
+
+existingConfigmap: ""
+
+master:
+  count: 1
+  
+  resourcesPreset: "nano"
+  
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    existingClaim: dev-redis-master
+    size: 512Mi
+
+  persistentVolumeClaimRetentionPolicy:
+    enabled: true
+    whenScaled: Retain
+    whenDeleted: Retain
+
+  service:
+    type: LoadBalancer
+    portNames:
+      redis: "tcp-redis"
+    ports:
+      redis: 6379
+    annotations:
+      metallb.universe.tf/loadBalancerIPs: 172.30.1.102
+    
+replica:
+  kind: StatefulSet
+  replicaCount: 0
+  resourcesPreset: "nano"
+  persistence:
+    enabled: false
+    size: 1Gi
+ 
+  autoscaling:
+    enabled: false
+    inReplicas: 1
+    maxReplicas: 11
+    targetCPU: ""
+    targetMemory: ""
+
+sentinel:
+  enabled: false
+
+
+networkPolicy:
+  enabled: true
+  allowExternal: true
+  allowExternalEgress: true
+
+metrics:
+  enabled: false

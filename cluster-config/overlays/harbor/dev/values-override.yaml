@@ -45,4 +45,4 @@ database:
 redis:
   type: external
   external:
-    addr: "redis-master.common.svc.cluster.local:6379"
+    addr: "dev-redis-master.cluster-config.svc.cluster.local:6379"
