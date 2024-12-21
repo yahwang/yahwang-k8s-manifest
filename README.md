@@ -11,10 +11,11 @@ yahwang-k8s-manifest/
 ├── cluster-config
 │   └── base
 │   └── overlays
-│   │   └── operators   # operator 관리
-│   │   └── ingress-nginx
 │   │   └── harbor
+│   │   └── ingress-nginx
 │   │   └── keycloak
+│   │   └── operators   # operator 관리
+│   │   └── redis
 │   └── secrets         # secret template 저장
 │   └── pvcs            # 볼륨 고정을 위한 pvc 미리 생성
 └── components
