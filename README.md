@@ -13,6 +13,7 @@ yahwang-k8s-manifest/
 │   └── overlays
 │   │   └── harbor
 │   │   └── ingress-nginx
+│   │   └── jenkins
 │   │   └── keycloak
 │   │   └── operators   # operator 관리
 │   │   └── redis

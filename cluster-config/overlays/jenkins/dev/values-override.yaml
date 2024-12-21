@@ -1,0 +1,89 @@
+
+
+controller:
+  existingSecret: "jenkins-secret"
+
+  admin:
+    userKey: jenkins-admin-user
+    passwordKey: jenkins-admin-password
+    createSecret: false
+    existingSecret: "jenkins-secret"
+
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "2048Mi"
+  
+  installPlugins:
+    - kubernetes:4306.vc91e951ea_eb_d
+    - workflow-aggregator:600.vb_57cdd26fdd7
+    - git:5.6.0
+    - configuration-as-code:1903.v004d55388f30
+    - s3:483.vcb_db_3dcee68f
+    - keycloak:2.3.2
+    - role-strategy:743.v142ea_b_d5f1d3
+
+  JCasC:
+    defaultConfig: true
+    configScripts: {}
+    security:
+      apiToken:
+        creationOfLegacyTokenEnabled: false
+        tokenGenerationOnCreationEnabled: false
+        usageStatisticsEnabled: true
+    securityRealm: |-
+      local:
+        allowsSignup: false
+        enableCaptcha: false
+        users:
+        - id: "${chart-admin-username}"
+          name: "Jenkins Admin"
+          password: "${chart-admin-password}"
+
+    authorizationStrategy: |-
+      loggedInUsersCanDoAnything:
+        allowAnonymousRead: false
+
+  jenkinsUrlProtocol: https
+
+  serviceType: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hostName: jenkins.yahwang.site 
+    tls:
+      - secretName: jenkins-letsencrypt-tls
+        hosts:
+          - jenkins.yahwang.site
+
+  sidecars:
+    configAutoReload:
+      enabled: true
+      scheme: http
+      skipTlsVerify: true
+
+persistence:
+  enabled: true
+  existingClaim: dev-jenkins
+  storageClass: longhorn
+  accessMode: "ReadWriteOnce"
+  size: "5Gi"
+
+agent:
+  enabled: true
+  skipTlsVerify: true
+  resources:
+    requests:
+      cpu: "512m"
+      memory: "512Mi"
+      # ephemeralStorage:
+    limits:
+      cpu: "512m"
+      memory: "512Mi"
+      # ephemeralStorage:

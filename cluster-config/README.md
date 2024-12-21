@@ -45,3 +45,11 @@ https://github.com/bitnami/charts/tree/keycloak/24.2.2/bitnami/keycloak
 ### github 연동하는 법
 
 https://www.youtube.com/watch?v=_72InRW4bdU&t=215s
+
+## jenkins
+
+https://github.com/jenkinsci/helm-charts/tree/jenkins-5.7.24/charts/jenkins
+
+### keycloak 연동하는 법
+
+https://docs.google.com/document/d/1gmHjU0YAAtLIS9nit9JSXdj43NoickEHa1rEmAoqz3E/edit?usp=sharing

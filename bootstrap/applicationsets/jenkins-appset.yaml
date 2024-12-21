@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: jenkins
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            server: https://kubernetes.default.svc
+            chart_repo: https://charts.jenkins.io
+            chart_name: jenkins
+            chart_version: "5.7.25"
+        
+  template:
+    metadata:
+      name: "{{env}}-jenkins"
+    spec:
+      project: cluster-config
+      sources:
+        - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
+          targetRevision: HEAD
+          ref: values
+        - repoURL: "{{chart_repo}}"
+          targetRevision: "{{chart_version}}"
+          chart: "{{chart_name}}"
+          helm:
+            valueFiles:
+              - $values/cluster-config/overlays/jenkins/{{env}}/values-override.yaml
+      destination:
+        server: "{{server}}"
+        namespace: cluster-config
+      syncPolicy:
+        automated:
+          # prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
