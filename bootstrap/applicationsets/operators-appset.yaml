@@ -25,6 +25,12 @@ spec:
             chart_repo: quay.io/strimzi-helm
             chart_name: strimzi-kafka-operator
             chart_version: "0.44.0"
+          - operator: minio-operator
+            env: dev
+            server: https://kubernetes.default.svc
+            chart_repo: https://operator.min.io
+            chart_name: operator
+            chart_version: "6.0.2"
   template:
     metadata:
       name: "{{env}}-{{operator}}"
