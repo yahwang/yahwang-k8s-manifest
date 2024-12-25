@@ -22,7 +22,7 @@ persistence:
     type: s3
     s3:
       existingSecret: harbor-s3-secret
-      region: yahwang
+      region: ap-northeast-2
       bucket: harbor-image
       regionendpoint: http://minio.common.svc.cluster.local:80
 
