@@ -5,7 +5,9 @@
 ```
 yahwang-k8s-manifest/
 ├── apps   
-│   └── custom-apps
+│   └── jupyterhub
+│   └── kafka-ui
+│   └── strimzi-kafka
 ├── bootstrap
 │   └── applicationsets # cluster-config 배포
 ├── cluster-config

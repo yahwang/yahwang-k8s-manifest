@@ -1,0 +1,40 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: jupyterhub
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            server: https://kubernetes.default.svc
+            chart_repo: https://hub.jupyter.org/helm-chart/
+            chart_name: jupyterhub
+            chart_version: "4.0.0"
+
+  template:
+    metadata:
+      name: "{{env}}-jupyterhub"
+    spec:
+      project: common
+      sources:
+        - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
+          targetRevision: HEAD
+          ref: values
+        - repoURL: "{{chart_repo}}"
+          targetRevision: "{{chart_version}}"
+          chart: "{{chart_name}}"
+          helm:
+            valueFiles:
+              - $values/apps/jupyterhub/overlays/{{env}}/values-override.yaml
+      destination:
+        server: "{{server}}"
+        namespace: jupyter
+      syncPolicy:
+        automated:
+          # prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

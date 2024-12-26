@@ -1,0 +1,219 @@
+fullnameOverride: ""
+nameOverride:
+
+# hub relates to the hub pod, responsible for running JupyterHub, its configured
+# Authenticator class KubeSpawner, and its configured Proxy class
+# ConfigurableHTTPProxy. KubeSpawner creates the user pods, and
+# ConfigurableHTTPProxy speaks with the actual ConfigurableHTTPProxy server in
+# the proxy pod.
+
+hub:
+  revisionHistoryLimit:
+  config:
+    JupyterHub:
+      admin_access: true
+      authenticator_class: "generic-oauth"
+    GenericOAuthenticator:
+      login_service: keycloak
+      oauth_callback_url: "https://jupyterhub.yahwang.site/hub/oauth_callback"
+      authorize_url: "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect/auth"
+      token_url: "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect/token"
+      userdata_url: "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect/userinfo"
+      scope: ["openid", "email", "groups"]
+      username_claim: "preferred_username"
+      manage_groups: true
+      allowed_groups:
+        - DevToolAdmins
+      admin_groups:
+        - DevToolAdmins
+  service:
+    type: ClusterIP
+  baseUrl: /
+  cookieSecret:
+  concurrentSpawnLimit: 64
+  consecutiveFailureLimit: 5
+  activeServerLimit:
+  deploymentStrategy:
+    ## type: Recreate
+    ## - sqlite-pvc backed hubs require the Recreate deployment strategy as a
+    ##   typical PVC storage can only be bound to one pod at the time.
+    ## - JupyterHub isn't designed to support being run in parallell. More work
+    ##   needs to be done in JupyterHub itself for a fully highly available (HA)
+    ##   deployment of JupyterHub on k8s is to be possible.
+    type: Recreate
+  db:
+    type: sqlite-pvc
+    upgrade:
+    pvc:
+      annotations: {}
+      selector: {}
+      accessModes:
+        - ReadWriteOnce
+      storage: 1Gi
+      subPath:
+      storageClassName: longhorn
+    url:
+    password:
+  allowNamedServers: false
+  extraEnv: # Keycloak client 설정
+    OAUTH_CLIENT_ID:
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-secret
+          key: OAUTH_CLIENT_ID
+    OAUTH_CLIENT_SECRET:
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-secret
+          key: OAUTH_CLIENT_SECRET
+
+rbac:
+  create: true
+
+# proxy relates to the proxy pod, the proxy-public service, and the autohttps
+# pod and proxy-http service.
+proxy:
+  secretToken:
+  annotations: {}
+  deploymentStrategy:
+    ## type: Recreate
+    ## - JupyterHub's interaction with the CHP proxy becomes a lot more robust
+    ##   with this configuration. To understand this, consider that JupyterHub
+    ##   during startup will interact a lot with the k8s service to reach a
+    ##   ready proxy pod. If the hub pod during a helm upgrade is restarting
+    ##   directly while the proxy pod is making a rolling upgrade, the hub pod
+    ##   could end up running a sequence of interactions with the old proxy pod
+    ##   and finishing up the sequence of interactions with the new proxy pod.
+    ##   As CHP proxy pods carry individual state this is very error prone. One
+    ##   outcome when not using Recreate as a strategy has been that user pods
+    ##   have been deleted by the hub pod because it considered them unreachable
+    ##   as it only configured the old proxy pod but not the new before trying
+    ##   to reach them.
+    type: Recreate
+    ## rollingUpdate:
+    ## - WARNING:
+    ##   This is required to be set explicitly blank! Without it being
+    ##   explicitly blank, k8s will let eventual old values under rollingUpdate
+    ##   remain and then the Deployment becomes invalid and a helm upgrade would
+    ##   fail with an error like this:
+    ##
+    ##     UPGRADE FAILED
+    ##     Error: Deployment.apps "proxy" is invalid: spec.strategy.rollingUpdate: Forbidden: may not be specified when strategy `type` is 'Recreate'
+    ##     Error: UPGRADE FAILED: Deployment.apps "proxy" is invalid: spec.strategy.rollingUpdate: Forbidden: may not be specified when strategy `type` is 'Recreate'
+    rollingUpdate:
+  # service relates to the proxy-public service
+  service:
+    type: ClusterIP
+    disableHttpPort: false
+  secretSync:
+    containerSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534 # nobody user
+      runAsGroup: 65534 # nobody group
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: "RuntimeDefault"
+    image:
+      name: quay.io/jupyterhub/k8s-secret-sync
+      tag: "set-by-chartpress"
+      pullPolicy:
+      pullSecrets: []
+    resources: {}
+  labels: {}
+  https:
+    enabled: false
+
+# singleuser relates to the configuration of KubeSpawner which runs in the hub
+# pod, and its spawning of user pods such as jupyter-myusername.
+singleuser:
+  events: true
+  extraAnnotations: {}
+  extraLabels:
+    hub.jupyter.org/network-access-hub: "true"
+  extraFiles: {}
+  extraEnv: {}
+  allowPrivilegeEscalation: false
+  uid: 1000
+  fsGid: 100
+  serviceAccountName:
+  image:
+    name: jupyter/base-notebook
+    tag: "python-3.11.6"
+  storage:
+    type: dynamic
+    static:
+      pvcName:
+      subPath: "{username}"
+    capacity: 10Gi
+    homeMountPath: /home/jovyan
+    dynamic:
+      storageClass: longhorn
+      pvcNameTemplate:
+      volumeNameTemplate: volume-{user_server}
+      storageAccessModes: [ReadWriteOnce]
+      subPath:
+  startTimeout: 300
+  cpu:
+    limit:
+    guarantee:
+  memory:
+    limit: 10G
+    guarantee: 1G
+  extraResource:
+    limits: {}
+    guarantees: {}
+  cmd: jupyterhub-singleuser
+  defaultUrl:
+  extraPodConfig: {}
+  profileList: []
+
+# scheduling relates to the user-scheduler pods and user-placeholder pods.
+scheduling:
+  userScheduler:
+    enabled: true
+    replicas: 1
+  podPriority:
+    enabled: false
+  userPlaceholder:
+    enabled: true
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  ingressClassName: nginx
+  hosts: 
+    - jupyterhub.yahwang.site
+  pathSuffix:
+  pathType: Prefix
+  tls:
+    - hosts:
+        - jupyterhub.yahwang.site
+      secretName: jupyterhub-letsencrypt-tls
+  extraPaths: []
+
+# cull relates to the jupyterhub-idle-culler service, responsible for evicting
+# inactive singleuser pods.
+#
+# The configuration below, except for enabled, corresponds to command-line flags
+# for jupyterhub-idle-culler as documented here:
+# https://github.com/jupyterhub/jupyterhub-idle-culler#as-a-standalone-script
+#
+cull:
+  enabled: true
+  users: false # --cull-users
+  adminUsers: true # --cull-admin-users
+  removeNamedServers: false # --remove-named-servers
+  timeout: 3600 # --timeout
+  every: 600 # --cull-every
+  concurrency: 10 # --concurrency
+  maxAge: 0 # --max-age
+
+debug:
+  enabled: false
+
+global:
+  safeToShowValues: false
