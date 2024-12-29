@@ -1,9 +1,7 @@
 apiVersion: observability.kaasops.io/v1alpha1
-kind: ClusterVectorPipeline
+kind: VectorPipeline
 metadata:
   name: vector-pipeline
-  labels:
-    vector-role: vector-consumer
 spec:
   sources:
     kafka_source:
@@ -14,6 +12,8 @@ spec:
       auto_offset_reset: "earliest"
       # 신뢰성을 위한 설정
       commit_interval_ms: 5000
+      decoding:
+        codec: json
     
   transforms:
     format_json:

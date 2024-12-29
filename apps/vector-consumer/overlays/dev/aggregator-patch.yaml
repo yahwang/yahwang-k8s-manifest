@@ -1,11 +1,8 @@
 apiVersion: observability.kaasops.io/v1alpha1
-kind: ClusterVectorAggregator
+kind: VectorAggregator
 metadata:
   name: vector-aggregator
-  labels:
-    vector-role: vector-consumer
 spec:
-  resourceNamespace: platform
   image: timberio/vector:0.43.0-alpine
   replicas: 1
   dataDir: /vector-data-dir
@@ -29,9 +26,9 @@ spec:
   api:
     enabled: true
   resources:
-    requests:
-      memory: "256Mi"
-      cpu: "0.2"
+    # requests:
+      # memory: "256Mi"
+      # cpu: "0.2"
     limits:
       memory: "1Gi"
       cpu: "1"

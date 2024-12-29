@@ -1,11 +1,8 @@
 apiVersion: observability.kaasops.io/v1alpha1
-kind: ClusterVectorAggregator
+kind: VectorAggregator
 metadata:
   name: vector-aggregator
-  labels:
-    vector-role: vector-consumer
 spec:
-  resourceNamespace: platform
   # image: 
   # imagePullSecrets:
   # - name: docker-registry

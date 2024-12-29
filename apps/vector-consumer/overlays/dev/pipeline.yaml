@@ -1,26 +1,31 @@
 apiVersion: observability.kaasops.io/v1alpha1
-kind: ClusterVectorPipeline
+kind: VectorPipeline
 metadata:
   name: vector-pipeline
-  labels:
-    vector-role: vector-consumer
 spec:
   sources:
     kafka_source:
       type: "kafka"
-      bootstrap_servers: "common-kafka-kafka-bootstrap.common.svc.cluster.local:9092"
-      topics: ["vectorTest"]
+      bootstrap_servers: "dev-kafka-cluster-kafka-bootstrap.common.svc.cluster.local:9092"
+      topics: ["vector-test"]
       group_id: "vector-consumer-group"
       auto_offset_reset: "earliest"
       # 신뢰성을 위한 설정
       commit_interval_ms: 5000
+      decoding:
+        codec: json
     
   transforms:
     format_json:
       inputs: ["kafka_source"]
       type: remap
       source: |
-        . = encode_json(.)  # 이벤트를 JSON 문자열로 인코딩
+        del(.topic)
+        del(.source_type)
+        del(.partition)
+        del(.offset)
+        del(.headers)
+        . = encode_json(.)
         
   sinks:
     s3_sink:
@@ -28,7 +33,7 @@ spec:
       inputs: ["format_json"]
       bucket: "vector-test"
       endpoint: "http://common-minio-hl.common.svc.cluster.local:9000"  # MinIO endpoint
-      region: "yahwang"
+      region: "ap-northeast-2"
       key_prefix: "logs/dt=%Y-%m-%d/"
       acknowledgements:
         enabled: true  # ACK 활성화
@@ -47,4 +52,4 @@ spec:
       # 배치 설정
       batch:
         max_bytes: 10485760  
-        timeout_secs: 60    
+        timeout_secs: 60
