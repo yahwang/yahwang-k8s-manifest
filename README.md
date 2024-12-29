@@ -13,6 +13,7 @@ yahwang-k8s-manifest/
 ├── cluster-config
 │   └── base
 │   └── overlays
+│   │   └── cert-manager
 │   │   └── harbor
 │   │   └── ingress-nginx
 │   │   └── jenkins
@@ -21,6 +22,7 @@ yahwang-k8s-manifest/
 │   │   └── redis
 │   └── secrets         # secret template 저장
 │   └── pvcs            # 볼륨 고정을 위한 pvc 미리 생성
+│   └── README.md       # cluster-config 설정 관련 문서
 └── components
 │   └── applicationsets # apps 배포
 ```
