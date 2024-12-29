@@ -55,3 +55,40 @@ https://github.com/jenkinsci/helm-charts/tree/jenkins-5.7.24/charts/jenkins
 ### keycloak 연동하는 법
 
 https://docs.google.com/document/d/1gmHjU0YAAtLIS9nit9JSXdj43NoickEHa1rEmAoqz3E/edit?usp=sharing
+
+## cert-manager
+
+https://github.com/cert-manager/cert-manager/blob/v1.16.2/deploy/charts/cert-manager/values.yaml
+
+### Let's Encrypt와 NGINX Ingress Controller 활용
+
+https://hbayraktar.medium.com/installing-cert-manager-and-nginx-ingress-with-lets-encrypt-on-kubernetes-fe0dff4b1924
+
+cluster-issuer는 namespace와 관계없음
+
+```
+kubectl apply -f cluster-issuer.yaml
+```
+
+### Ingress 설정
+
+cert-manager.io/cluster-issuer: issuer에서 설정한 이름
+
+tls secretName: 이름만 설정 시 자동으로 생성됨
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - my-domain
+    secretName: my-domain-tls
+  rules:
+  - host: my-domain
+```
