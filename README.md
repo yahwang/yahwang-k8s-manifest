@@ -9,7 +9,7 @@ yahwang-k8s-manifest/
 │   └── kafka-ui
 │   └── strimzi-kafka
 ├── bootstrap
-│   └── applicationsets # cluster-config 배포
+│   └── applicationsets      # cluster-config 배포
 ├── cluster-config
 │   └── base
 │   └── overlays
@@ -18,11 +18,12 @@ yahwang-k8s-manifest/
 │   │   └── ingress-nginx
 │   │   └── jenkins
 │   │   └── keycloak
-│   │   └── operators   # operator 관리
+│   │   └── operators        # operator 관리
 │   │   └── redis
-│   └── secrets         # secret template 저장
-│   └── pvcs            # 볼륨 고정을 위한 pvc 미리 생성
-│   └── README.md       # cluster-config 설정 관련 문서
+│   └── secrets              # secret template 저장
+│   └── pvcs                 # 볼륨 고정을 위한 pvc 미리 생성
+│   └── README.md            # cluster-config 설정 관련 문서
 └── components
-│   └── applicationsets # apps 배포
+│   └── applicationsets      # apps 배포
+│   └── appset-template.yaml # apps 배포 템플릿
 ```

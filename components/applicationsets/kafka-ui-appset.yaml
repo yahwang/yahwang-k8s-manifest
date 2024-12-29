@@ -5,32 +5,38 @@ metadata:
   name: kafka-ui
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
-    - list:
-        elements:
-          - env: dev
-            server: https://kubernetes.default.svc
-            chart_repo: https://provectus.github.io/kafka-ui-charts
-            chart_name: kafka-ui
-            chart_version: "0.7.6"
-
+    - matrix:
+        generators:
+          - clusters:
+              selector:
+                matchLabels:
+                  environment: dev
+          - list:
+              elements:
+                - env: dev
+                  chart_repo: https://provectus.github.io/kafka-ui-charts
+                  chart_name: kafka-ui
+                  chart_version: "0.7.6"
   template:
     metadata:
-      name: "{{env}}-kafka-ui"
+      name: "{{.env}}-kafka-ui"
     spec:
       project: common
       sources:
         - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
           targetRevision: HEAD
           ref: values
-        - repoURL: "{{chart_repo}}"
-          targetRevision: "{{chart_version}}"
-          chart: "{{chart_name}}"
+        - repoURL: "{{.chart_repo}}"
+          targetRevision: "{{.chart_version}}"
+          chart: "{{.chart_name}}"
           helm:
             valueFiles:
-              - $values/apps/kafka-ui/overlays/{{env}}/values-override.yaml
+              - "$values/apps/kafka-ui/overlays/{{.env}}/values-override.yaml"
       destination:
-        server: "{{server}}"
+        server: "{{.server}}"
         namespace: common
       syncPolicy:
         automated:

@@ -1,0 +1,46 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kafka-ui
+  namespace: argocd
+spec:
+  goTemplate: true                                                            # goTemplate 적용 ( 변수에 .을 항상 붙여야 함 )
+  goTemplateOptions: ["missingkey=error"]                                     # goTemplate 적용 ( key 오류 시 applicationset 생성이 안 됨 )
+  generators:
+    - matrix:                                                                 # matrix generator 적용
+        generators:
+          - clusters:                                                         # cluster generator 적용
+              selector:
+                matchLabels:                                                  # cluster마다 envrionment label 설정해야 함
+                  environment: dev                                            # dev로 설정된 cluster만 배포됨   
+          - list:                                                             # list generator 적용
+              elements:                                                       # elements에 정의한 변수 template에서 사용 가능
+                - env: dev
+                  chart_repo: https://provectus.github.io/kafka-ui-charts
+                  chart_name: kafka-ui
+                  chart_version: "0.7.6"
+  template:
+    metadata:
+      name: "{{.env}}-kafka-ui"                                               # {{.변수}} 를 쓸 때는 전체 문자 양 끝에 ""을 붙이는 게 좋음 ( 변수명에 특수문자 포함 시 반드시 필요하기 때문 )
+    spec:
+      project: common
+      sources:
+        - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git            # git repo root 폴더를 values로 접근 가능하게 함
+          targetRevision: HEAD
+          ref: values
+        - repoURL: "{{.chart_repo}}"
+          targetRevision: "{{.chart_version}}"
+          chart: "{{.chart_name}}"
+          helm:                                                                   
+            valueFiles:                                                      
+              - "$values/apps/kafka-ui/overlays/{{.env}}/values-override.yaml" # $values로 git repo root 폴더를 가리킴
+      destination:
+        server: "{{.server}}"                                                  # cluster의 정보에서 가져옴 - cluster generator 적용 시만 가능
+        namespace: common
+      syncPolicy:
+        automated:
+          # prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
