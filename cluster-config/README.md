@@ -15,8 +15,10 @@ kubectl create secret docker-registry harbor-registry \
     --namespace common \
     --docker-server=https://harbor.yahwang.site \
     --docker-username=your-username \
-    --docker-password=your-password \
+    --docker-password=your-password
 ```
+
+robot account의 경우 robot\$이름 ( \$를 써야 한다. )
 
 ## 2. ingress-nginx
 
