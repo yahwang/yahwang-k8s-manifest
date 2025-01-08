@@ -81,6 +81,12 @@ spec:
   - host: my-domain
 ```
 
+## 7. grafana
+
+https://github.com/grafana/helm-charts/tree/grafana-8.8.2/charts/grafana
+
+
+
 # operators
 
 ## 1. vector-operator
