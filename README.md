@@ -14,10 +14,12 @@ yahwang-k8s-manifest/
 │   └── base
 │   └── overlays
 │   │   └── cert-manager
+│   │   └── grafana
 │   │   └── harbor
 │   │   └── ingress-nginx
 │   │   └── jenkins
 │   │   └── keycloak
+│   │   └── loki
 │   │   └── operators        # operator 관리
 │   │   └── redis
 │   └── secrets              # secret template 저장

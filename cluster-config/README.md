@@ -85,7 +85,11 @@ spec:
 
 https://github.com/grafana/helm-charts/tree/grafana-8.8.2/charts/grafana
 
+## 8. loki
 
+https://github.com/grafana/loki/tree/v3.3.2/production/helm/loki
+
+https://grafana.com/docs/loki/latest/operations/storage/retention/#configuring-the-retention-period
 
 # operators
 

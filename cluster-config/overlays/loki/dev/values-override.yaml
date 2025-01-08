@@ -1,0 +1,535 @@
+kubeVersionOverride: null
+
+global:
+  image:
+    registry: null
+  priorityClassName: null
+  clusterDomain: "cluster.local"
+  dnsService: "kube-dns"
+  dnsNamespace: "kube-system"
+nameOverride: null
+fullnameOverride: null
+clusterLabelOverride: null
+imagePullSecrets: []
+# -- Deployment mode lets you specify how to deploy Loki.
+# There are 3 options:
+# - SingleBinary: Loki is deployed as a single binary, useful for small installs typically without HA, up to a few tens of GB/day.
+# - SimpleScalable: Loki is deployed as 3 targets: read, write, and backend. Useful for medium installs easier to manage than distributed, up to a about 1TB/day.
+# - Distributed: Loki is deployed as individual microservices. The most complicated but most capable, useful for large installs, typically over 1TB/day.
+# There are also 2 additional modes used for migrating between deployment modes:
+# - SingleBinary<->SimpleScalable: Migrate from SingleBinary to SimpleScalable (or vice versa)
+# - SimpleScalable<->Distributed: Migrate from SimpleScalable to Distributed (or vice versa)
+# Note: SimpleScalable and Distributed REQUIRE the use of object storage.
+deploymentMode: SingleBinary
+
+
+loki:
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 30
+    timeoutSeconds: 1
+  image:
+    registry: docker.io
+    repository: grafana/loki
+    tag: k227-4309f47
+    digest: null
+    pullPolicy: IfNotPresent
+  annotations: {}
+  podAnnotations: {}
+  podLabels: {}
+  serviceAnnotations: {}
+  serviceLabels: {}
+  revisionHistoryLimit: 10
+  podSecurityContext:
+    fsGroup: 10001
+    runAsGroup: 10001
+    runAsNonRoot: true
+    runAsUser: 10001
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+    allowPrivilegeEscalation: false
+  enableServiceLinks: true
+  ######################################################################################################################
+  #
+  # Loki Configuration
+  #
+  # There are several ways to pass configuration to Loki, listing them here in order of our preference for how
+  # you should use this chart.
+  # 1. Use the templated value of loki.config below and the corresponding override sections which follow.
+  #    This allows us to set a lot of important Loki configurations and defaults and also allows us to maintain them
+  #    over time as Loki changes and evolves.
+  # 2. Use the loki.structuredConfig section.
+  #    This will completely override the templated value of loki.config, so you MUST provide the entire Loki config
+  #    including any configuration that we set in loki.config unless you explicitly are trying to change one of those
+  #    values and are not able to do so with the templated sections.
+  #    If you choose this approach the burden is on you to maintain any changes we make to the templated config.
+  # 3. Use an existing secret or configmap to provide the configuration.
+  #    This option is mostly provided for folks who have external processes which provide or modify the configuration.
+  #    When using this option you can specify a different name for loki.generatedConfigObjectName and configObjectName
+  #    if you have a process which takes the generated config and modifies it, or you can stop the chart from generating
+  #    a config entirely by setting loki.generatedConfigObjectName to
+  #
+  ######################################################################################################################
+
+  # -- Defines what kind of object stores the configuration, a ConfigMap or a Secret.
+  # In order to move sensitive information (such as credentials) from the ConfigMap/Secret to a more secure location (e.g. vault), it is possible to use [environment variables in the configuration](https://grafana.com/docs/loki/latest/configuration/#use-environment-variables-in-the-configuration).
+  # Such environment variables can be then stored in a separate Secret and injected via the global.extraEnvFrom value. For details about environment injection from a Secret please see [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#use-case-as-container-environment-variables).
+  configStorageType: ConfigMap
+  # -- The name of the object which Loki will mount as a volume containing the config.
+  # If the configStorageType is Secret, this will be the name of the Secret, if it is ConfigMap, this will be the name of the ConfigMap.
+  # The value will be passed through tpl.
+  configObjectName: '{{ include "loki.name" . }}'
+  # -- The name of the Secret or ConfigMap that will be created by this chart.
+  # If empty, no configmap or secret will be created.
+  # The value will be passed through tpl.
+  generatedConfigObjectName: '{{ include "loki.name" . }}'
+  # -- Config file contents for Loki
+  # @default -- See values.yaml
+  config: |
+    {{- if .Values.enterprise.enabled}}
+    {{- tpl .Values.enterprise.config . }}
+    {{- else }}
+    auth_enabled: {{ .Values.loki.auth_enabled }}
+    {{- end }}
+
+    {{- with .Values.loki.server }}
+    server:
+      {{- toYaml . | nindent 2}}
+    {{- end}}
+
+    pattern_ingester:
+      enabled: {{ .Values.loki.pattern_ingester.enabled }}
+
+    memberlist:
+    {{- if .Values.loki.memberlistConfig }}
+      {{- toYaml .Values.loki.memberlistConfig | nindent 2 }}
+    {{- else }}
+    {{- if .Values.loki.extraMemberlistConfig}}
+    {{- toYaml .Values.loki.extraMemberlistConfig | nindent 2}}
+    {{- end }}
+      join_members:
+        - {{ include "loki.memberlist" . }}
+        {{- with .Values.migrate.fromDistributed }}
+        {{- if .enabled }}
+        - {{ .memberlistService }}
+        {{- end }}
+        {{- end }}
+    {{- end }}
+
+    {{- with .Values.loki.ingester }}
+    ingester:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- if .Values.loki.commonConfig}}
+    common:
+    {{- toYaml .Values.loki.commonConfig | nindent 2}}
+      storage:
+      {{- include "loki.commonStorageConfig" . | nindent 4}}
+    {{- end}}
+
+    {{- with .Values.loki.limits_config }}
+    limits_config:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    runtime_config:
+      file: /etc/loki/runtime-config/runtime-config.yaml
+
+    {{- with .Values.chunksCache }}
+    {{- if .enabled }}
+    chunk_store_config:
+      chunk_cache_config:
+        default_validity: {{ .defaultValidity }}
+        background:
+          writeback_goroutines: {{ .writebackParallelism }}
+          writeback_buffer: {{ .writebackBuffer }}
+          writeback_size_limit: {{ .writebackSizeLimit }}
+        memcached:
+          batch_size: {{ .batchSize }}
+          parallelism: {{ .parallelism }}
+        memcached_client:
+          addresses: dnssrvnoa+_memcached-client._tcp.{{ template "loki.fullname" $ }}-chunks-cache.{{ $.Release.Namespace }}.svc
+          consistent_hash: true
+          timeout: {{ .timeout }}
+          max_idle_conns: 72
+    {{- end }}
+    {{- end }}
+
+    {{- if .Values.loki.schemaConfig }}
+    schema_config:
+    {{- toYaml .Values.loki.schemaConfig | nindent 2}}
+    {{- end }}
+
+    {{- if .Values.loki.useTestSchema }}
+    schema_config:
+    {{- toYaml .Values.loki.testSchemaConfig | nindent 2}}
+    {{- end }}
+
+    {{ include "loki.rulerConfig" . }}
+
+    {{- if or .Values.tableManager.retention_deletes_enabled .Values.tableManager.retention_period }}
+    table_manager:
+      retention_deletes_enabled: {{ .Values.tableManager.retention_deletes_enabled }}
+      retention_period: {{ .Values.tableManager.retention_period }}
+    {{- end }}
+
+    query_range:
+      align_queries_with_step: true
+      {{- with .Values.loki.query_range }}
+      {{- tpl (. | toYaml) $ | nindent 2 }}
+      {{- end }}
+      {{- if .Values.resultsCache.enabled }}
+      {{- with .Values.resultsCache }}
+      cache_results: true
+      results_cache:
+        cache:
+          default_validity: {{ .defaultValidity }}
+          background:
+            writeback_goroutines: {{ .writebackParallelism }}
+            writeback_buffer: {{ .writebackBuffer }}
+            writeback_size_limit: {{ .writebackSizeLimit }}
+          memcached_client:
+            consistent_hash: true
+            addresses: dnssrvnoa+_memcached-client._tcp.{{ template "loki.fullname" $ }}-results-cache.{{ $.Release.Namespace }}.svc
+            timeout: {{ .timeout }}
+            update_interval: 1m
+      {{- end }}
+      {{- end }}
+
+    {{- with .Values.loki.storage_config }}
+    storage_config:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.query_scheduler }}
+    query_scheduler:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.compactor }}
+    compactor:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.analytics }}
+    analytics:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.querier }}
+    querier:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.index_gateway }}
+    index_gateway:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.frontend }}
+    frontend:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.frontend_worker }}
+    frontend_worker:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.distributor }}
+    distributor:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    tracing:
+      enabled: {{ .Values.loki.tracing.enabled }}
+
+    {{- with .Values.loki.bloom_build }}
+    bloom_build:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+
+    {{- with .Values.loki.bloom_gateway }}
+    bloom_gateway:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
+  
+  auth_enabled: false
+  memberlistConfig: {}
+  extraMemberlistConfig: {}
+  tenants: []
+  server:
+    http_listen_port: 3100
+    grpc_listen_port: 9095
+    http_server_read_timeout: 600s
+    http_server_write_timeout: 600s
+  limits_config:
+    retention_period: 120h
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    max_cache_freshness_per_query: 10m
+    split_queries_by_interval: 15m
+    query_timeout: 300s
+    volume_enabled: true
+  runtimeConfig: {}
+  commonConfig:
+    path_prefix: /var/loki
+    replication_factor: 1
+    compactor_address: '{{ include "loki.compactorAddress" . }}'
+  storage:
+    type: filesystem
+    filesystem:
+      chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
+      admin_api_directory: /var/loki/admin
+  # -- Configure memcached as an external cache for chunk and results cache. Disabled by default
+  # must enable and specify a host for each cache you would like to use.
+  memcached:
+    chunk_cache:
+      enabled: false
+      host: ""
+      service: "memcached-client"
+      batch_size: 256
+      parallelism: 10
+    results_cache:
+      enabled: false
+      host: ""
+      service: "memcached-client"
+      timeout: "500ms"
+      default_validity: "12h"
+  # -- Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas
+  schemaConfig:
+    configs:
+      - from: 2025-01-01
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+  useTestSchema: false
+  # -- Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler
+  rulerConfig: {}
+  structuredConfig: {}
+  query_scheduler: {}
+  storage_config:
+    boltdb_shipper:
+      index_gateway_client:
+        server_address: '{{ include "loki.indexGatewayAddress" . }}'
+    tsdb_shipper:
+      index_gateway_client:
+        server_address: '{{ include "loki.indexGatewayAddress" . }}'
+    bloom_shipper:
+      working_directory: /var/loki/data/bloomshipper
+    hedging:
+      at: "250ms"
+      max_per_second: 20
+      up_to: 3
+  compactor: {}
+  pattern_ingester:
+    enabled: false
+  analytics: {}
+  query_range: {}
+  querier: {}
+  ingester: {}
+  index_gateway:
+    mode: stateless
+  frontend:
+    scheduler_address: '{{ include "loki.querySchedulerAddress" . }}'
+    tail_proxy_url: '{{ include "loki.querierAddress" . }}'
+  frontend_worker:
+    scheduler_address: '{{ include "loki.querySchedulerAddress" . }}'
+  distributor: {}
+  tracing:
+    enabled: false
+  bloom_build:
+    enabled: false
+    builder:
+      planner_address: '{{ include "loki.bloomPlannerAddress" . }}'
+  bloom_gateway:
+    enabled: false
+    client:
+      addresses: '{{ include "loki.bloomGatewayAddresses" . }}'
+
+######################################################################################################################
+#
+# Chart Testing
+#
+######################################################################################################################
+
+# -- Section for configuring optional Helm test
+test:
+  enabled: false
+  
+lokiCanary:
+  enabled: false
+  
+######################################################################################################################
+#
+# Service Accounts and Kubernetes RBAC
+#
+######################################################################################################################
+serviceAccount:
+  create: true
+  name: null
+  imagePullSecrets: []
+  annotations: {}
+  labels: {}
+  automountServiceAccountToken: true
+  
+rbac:
+  # -- If pspEnabled true, a PodSecurityPolicy is created for K8s that use psp.
+  pspEnabled: false
+  # -- For OpenShift set pspEnabled to 'false' and sccEnabled to 'true' to use the SecurityContextConstraints.
+  sccEnabled: false
+  pspAnnotations: {}
+  # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+  # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+  # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+  # -- Whether to install RBAC in the namespace only or cluster-wide. Useful if you want to watch ConfigMap globally.
+  namespaced: false
+######################################################################################################################
+#
+# Network Policy configuration
+#
+######################################################################################################################
+networkPolicy:
+  enabled: false
+  
+######################################################################################################################
+#
+# Global memberlist configuration
+#
+######################################################################################################################
+
+# Configuration for the memberlist service
+memberlist:
+  service:
+    publishNotReadyAddresses: false
+    annotations: {}
+
+adminApi:
+  replicas: 0
+  
+######################################################################################################################
+#
+# Gateway and Ingress
+#
+# By default this chart will deploy a Nginx container to act as a gateway which handles routing of traffic
+# and can also do auth.
+#
+# If you would prefer you can optionally disable this and enable using k8s ingress to do the incoming routing.
+#
+######################################################################################################################
+
+# Configuration for the gateway
+gateway:
+  enabled: false
+  
+enterpriseGateway:
+  replicas: 0
+  
+# -- Ingress configuration Use either this ingress or the gateway, but not both at once.
+# If you enable this, make sure to disable the gateway.
+# You'll need to supply authn configuration for your ingress controller.
+ingress:
+  enabled: false
+
+######################################################################################################################
+#
+# Single Binary Deployment
+#
+# For small Loki installations up to a few 10's of GB per day, or for testing and development.
+#
+######################################################################################################################
+
+singleBinary:
+  replicas: 1
+  autoscaling:
+    enabled: false
+  annotations: {}
+  podAnnotations: {}
+  podLabels: {}
+  selectorLabels: {}
+  service:
+    annotations: {}
+    labels: {}
+  # -- Comma-separated list of Loki modules to load for the single binary
+  targetModule: "all"
+  extraArgs: []
+  extraEnv: []
+  extraEnvFrom: []
+  extraContainers: []
+  initContainers: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  resources: {}
+  terminationGracePeriodSeconds: 30
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: single-binary
+          topologyKey: kubernetes.io/hostname
+  dnsConfig: {}
+  nodeSelector: {}
+  tolerations: []
+  persistence:
+    enableStatefulSetAutoDeletePVC: true
+    enabled: true
+    size: 5Gi
+    storageClass: "longhorn"
+    selector: null
+    annotations: {}
+
+######################################################################################################################
+#
+# Simple Scalable Deployment (SSD) Mode
+#
+# For small to medium size Loki deployments up to around 1 TB/day, this is the default mode for this helm chart
+#
+######################################################################################################################
+
+write:
+  replicas: 0
+read:
+  replicas: 0
+backend:
+  replicas: 0
+
+######################################################################################################################
+#
+# Microservices Mode
+#
+# For large Loki deployments ingesting more than 1 TB/day
+#
+######################################################################################################################
+
+chunksCache:
+  enabled: false
+
+resultsCache:
+  enabled: false
+
+######################################################################################################################
+#
+# Subchart configurations
+#
+######################################################################################################################
+# -- Setting for the Grafana Rollout Operator https://github.com/grafana/helm-charts/tree/main/charts/rollout-operator
+rollout_operator:
+  enabled: false
+  
+minio:
+  enabled: false
+  
+sidecar:
+  rules:
+    enabled: false
