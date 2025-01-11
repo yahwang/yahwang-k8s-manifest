@@ -29,3 +29,7 @@ yahwang-k8s-manifest/
 │   └── applicationsets      # apps 배포
 │   └── appset-template.yaml # apps 배포 템플릿
 ```
+
+## Cluster 구성
+
+![Cluster 구성](https://drive.google.com/uc?export=view&id=1OV9Pfna_z3KyK1pZ4VpERXu6DV26YRbF)
