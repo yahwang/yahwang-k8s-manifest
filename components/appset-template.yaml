@@ -12,7 +12,7 @@ spec:
         generators:
           - clusters:                                                         # cluster generator 적용
               selector:
-                matchLabels:                                                  # cluster마다 envrionment label 설정해야 함
+                matchLabels:                                                  # cluster마다 envrionment label 설정해야 함 (Settings-Clusters)
                   environment: dev                                            # dev로 설정된 cluster만 배포됨   
           - list:                                                             # list generator 적용
               elements:                                                       # elements에 정의한 변수 template에서 사용 가능

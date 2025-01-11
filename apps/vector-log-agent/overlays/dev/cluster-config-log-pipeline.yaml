@@ -1,0 +1,42 @@
+apiVersion: observability.kaasops.io/v1alpha1
+kind: VectorPipeline
+metadata:
+  name: cluster-config-log-pipeline
+  namespace: cluster-config
+spec:
+  sources:
+    kubernetes_logs:
+      type: kubernetes_logs
+      extra_namespace_label_selector: "kubernetes.io/metadata.name=cluster-config"
+      # extra_label_selector: "app!=testdeployment"
+  transforms:
+    select_fields:
+      type: remap
+      inputs:
+        - kubernetes_logs
+      source: |
+        del(.source_type)
+        del(.file)
+        del(.stream)
+        .namespace = .kubernetes.pod_namespace
+        .container_name = .kubernetes.container_name
+        .pod_name = .kubernetes.pod_name
+        del(.kubernetes)
+  
+  sinks:
+    loki:
+      type: loki
+      inputs: 
+        - select_fields
+      encoding:
+        codec: json
+      endpoint: http://dev-loki.cluster-config.svc.cluster.local:3100
+      labels:
+        namespace: "{{ namespace }}"
+        pod_name: "{{ pod_name }}"
+      batch:
+        timeout_secs: 5
+      # 버퍼 설정
+      buffer:
+        type: "memory" 
+        when_full: "block"

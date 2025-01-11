@@ -1,0 +1,17 @@
+apiVersion: observability.kaasops.io/v1alpha1
+kind: Vector
+metadata:
+  name: vector-common-agent
+  namespace: common
+spec:
+  agent:
+    image: "timberio/vector:0.43.0-alpine"
+    api:
+      enabled: false
+    env:
+      - name: VECTOR_THREADS
+        value: "1"
+      - name: VECTOR_LOG
+        value: "INFO"
+      - name: VECTOR_GRACEFUL_SHUTDOWN_LIMIT_SECS
+        value: "5"

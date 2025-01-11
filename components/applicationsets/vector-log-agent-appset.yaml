@@ -1,0 +1,37 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: vector-log-agent
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - matrix:
+        generators:
+          - clusters:
+              selector:
+                matchLabels:
+                  environment: dev
+          - list:
+              elements:
+                - env: dev
+  template:
+    metadata:
+      name: "{{.env}}-vector-log-agent"
+    spec:
+      project: common
+      sources:
+        - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
+          targetRevision: HEAD
+          path: apps/vector-log-agent/overlays/{{.env}}
+      destination:
+        server: "{{.server}}"
+        namespace: common
+      syncPolicy:
+        automated:
+          # prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
