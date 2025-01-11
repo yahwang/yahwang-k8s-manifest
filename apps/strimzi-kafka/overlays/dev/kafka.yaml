@@ -33,6 +33,15 @@ spec:
       max.message.bytes: 2097176
       replica.fetch.max.bytes: 2097176
       num.replica.fetchers: 2
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: kafka-metrics
+          key: kafka-metrics-config.yml
   entityOperator:
     topicOperator: {}
     userOperator: {}
+  kafkaExporter:
+    topicRegex: "."
+    groupRegex: "."

@@ -5,4 +5,5 @@ resources:
   - ./topic-patch.yaml
   - ./kafka.yaml
   - ./nodepool-patch.yaml
+  - ./kafka-metrics.yaml
 

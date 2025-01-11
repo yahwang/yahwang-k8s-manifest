@@ -6,13 +6,11 @@ metadata:
   labels:
     strimzi.io/cluster: dev-kafka-cluster
 spec:
-  replicas: 2
+  replicas: 3
   roles:
     - controller
     - broker
-  resources: 
-    requests:
-      memory: 1Gi
+  resources:
     limits:
       memory: 2Gi
   jvmOptions:
