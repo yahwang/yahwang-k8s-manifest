@@ -91,6 +91,14 @@ https://github.com/grafana/loki/tree/v3.3.2/production/helm/loki
 
 https://grafana.com/docs/loki/latest/operations/storage/retention/#configuring-the-retention-period
 
+## 9. prometheus
+
+kube-prometheus-stack으로 설치하여 POD monitor, server, operator 등 한 번에 설치
+
+https://github.com/prometheus-community/helm-charts/tree/kube-prometheus-stack-67.10.0/charts/kube-prometheus-stack
+
+
+
 # operators
 
 ## 1. vector-operator
