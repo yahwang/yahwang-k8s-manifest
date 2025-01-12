@@ -21,6 +21,7 @@ yahwang-k8s-manifest/
 │   │   └── keycloak
 │   │   └── loki
 │   │   └── operators        # operator 관리
+│   │   └── prometheus
 │   │   └── redis
 │   └── secrets              # secret template 저장
 │   └── pvcs                 # 볼륨 고정을 위한 pvc 미리 생성

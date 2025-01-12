@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: grafana
+  name: prometheus
   namespace: argocd
 spec:
   goTemplate: true
@@ -16,13 +16,13 @@ spec:
           - list:
               elements:
                 - env: dev
-                  chart_repo: https://grafana.github.io/helm-charts
-                  chart_name: grafana
-                  chart_version: "8.8.2"
+                  chart_repo: https://prometheus-community.github.io/helm-charts
+                  chart_name: kube-prometheus-stack
+                  chart_version: "67.10.0"
         
   template:
     metadata:
-      name: "{{.env}}-grafana"
+      name: "{{.env}}-prometheus"
     spec:
       project: cluster-config
       sources:
@@ -34,7 +34,7 @@ spec:
           chart: "{{.chart_name}}"
           helm:
             valueFiles:
-              - $values/cluster-config/overlays/grafana/{{.env}}/values-override.yaml
+              - $values/cluster-config/overlays/prometheus/{{.env}}/values-override.yaml
       destination:
         server: "{{.server}}"
         namespace: cluster-config
