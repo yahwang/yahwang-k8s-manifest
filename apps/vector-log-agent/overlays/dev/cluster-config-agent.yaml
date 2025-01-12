@@ -7,7 +7,7 @@ spec:
   agent:
     image: "timberio/vector:0.43.0-alpine"
     api:
-      enabled: false
+      enabled: true
     env:
       - name: VECTOR_THREADS
         value: "1"
