@@ -8,7 +8,7 @@ spec:
   dataDir: /vector-data-dir
   env:
     - name: VECTOR_THREADS
-      value: "1"
+      value: "2"
     - name: VECTOR_LOG
       value: "INFO"
     - name: VECTOR_GRACEFUL_SHUTDOWN_LIMIT_SECS
@@ -31,6 +31,6 @@ spec:
     # requests:
       # memory: "256Mi"
       # cpu: "0.2"
-    limits:
-      memory: "1Gi"
-      cpu: "1"
+    # limits:
+      # memory: "1Gi"
+      # cpu: "1"

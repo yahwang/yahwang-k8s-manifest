@@ -53,12 +53,12 @@ spec:
       # 버퍼 설정
       buffer:
         type: "memory"
-        max_events: 500
+        max_events: 50000
         when_full: "block"
       
       # 배치 설정
       batch:
-        max_bytes: 10485760  
+        max_bytes: 20971520  
         timeout_secs: 60
     # prometheus:
       # type: prometheus_exporter
