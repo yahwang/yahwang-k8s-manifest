@@ -8,6 +8,8 @@ spec:
     image: "timberio/vector:0.43.0-alpine"
     api:
       enabled: true
+      # playground: false
+    internalMetrics: true
     env:
       - name: VECTOR_THREADS
         value: "1"

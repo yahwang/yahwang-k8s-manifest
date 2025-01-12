@@ -25,6 +25,8 @@ spec:
           key: AWS_SECRET_ACCESS_KEY      
   api:
     enabled: true
+    # playground: false
+  internalMetrics: true
   resources:
     # requests:
       # memory: "256Mi"
