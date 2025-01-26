@@ -7,7 +7,6 @@ spec:
   sources:
     kubernetes_logs:
       type: kubernetes_logs
-      extra_namespace_label_selector: "kubernetes.io/metadata.name=common"
       # extra_label_selector: "app!=testdeployment"
   transforms:
     select_fields:
