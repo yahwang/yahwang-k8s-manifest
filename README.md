@@ -31,6 +31,8 @@ yahwang-k8s-manifest/
 │   └── appset-template.yaml # apps 배포 템플릿
 ```
 
+## [Dashboard 구성](https://github.com/yahwang/yahwang-k8s-manifest/blob/main/Dashboard.md)
+
 ## Cluster 구성
 
 ![Cluster 구성](https://drive.google.com/uc?export=view&id=1OV9Pfna_z3KyK1pZ4VpERXu6DV26YRbF)
