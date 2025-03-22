@@ -1,0 +1,6 @@
+## @param keyrenewperiod Specifies key renewal period. Default 30 days
+## e.g
+## keyrenewperiod: "720h30m"
+## To disable use "0", with quotes!
+##
+keyrenewperiod: "0"
