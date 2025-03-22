@@ -98,6 +98,28 @@ kube-prometheus-stack으로 설치하여 POD monitor, server, operator 등 한 �
 https://github.com/prometheus-community/helm-charts/tree/kube-prometheus-stack-67.10.0/charts/kube-prometheus-stack
 
 
+## 10. sealed-secrets
+
+https://github.com/bitnami-labs/sealed-secrets/tree/v0.28.0
+
+참고: kubeseal도 별도로 설치해야 함
+
+### 10-1. sealed-secret 생성 방법
+
+--controller-name: sealed-secrets service name
+
+--controller-namespace: sealed-secrets namespace (default: kube-system) 생략 가능
+
+```
+# 기존 secret으로 yaml 만드는 법
+
+kubectl get secret minio-secret -n common -o yaml | kubeseal --controller-name dev-sealed-secrets --scope namespace-wide -w mysealedsecret.yaml -o yaml
+
+# sealed secret 암호화 검증 ( 아무 결과가 없으면 정상 )
+
+kubeseal --controller-name dev-sealed-secrets -f mysealedsecret.yaml --validate
+```
+
 
 # operators
 

@@ -23,7 +23,7 @@ yahwang-k8s-manifest/
 │   │   └── operators        # operator 관리
 │   │   └── prometheus
 │   │   └── redis
-│   └── secrets              # secret template 저장
+│   └── sealed-secrets       # sealed-secrets + reflector를 통한 시크릿 관리
 │   └── pvcs                 # 볼륨 고정을 위한 pvc 미리 생성
 │   └── README.md            # cluster-config 설정 관련 문서
 └── components
