@@ -8,8 +8,10 @@ yahwang-k8s-manifest/
 │   └── jupyterhub
 │   └── kafka-ui
 │   └── strimzi-kafka
+│   └── elasticsearch-eck
 ├── bootstrap
 │   └── applicationsets      # cluster-config 배포
+│   │   └── sealed-secrets-manager # sealed-secrets 전체 배포 manager
 ├── cluster-config
 │   └── base
 │   └── overlays

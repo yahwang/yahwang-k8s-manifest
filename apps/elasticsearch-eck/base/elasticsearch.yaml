@@ -1,0 +1,59 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch-eck
+spec:
+  version: 7.17.28
+  volumeClaimDeletePolicy: DeleteOnScaledownOnly
+  # https://www.elastic.co/guide/en/cloud-on-k8s/2.16/k8s-users-and-roles.html
+  auth:
+    # disableElasticUser: true
+    fileRealm:
+    - secretName: es-superuser-secret
+  nodeSets:
+  - name: data
+    count: 1
+    config:
+      node.roles: ["master", "data", "ingest", "ml", "transform"]
+      node.store.allow_mmap: false
+    podTemplate:
+      spec:
+        # root 유저로 실행 시 올바르게 작동하지 않기 때문에 일반 유저로 사용
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
+        containers:
+        - name: elasticsearch
+          # env:
+          # - name: ES_JAVA_OPTS
+            # value: "-Xms2g -Xmx2g"
+          resources:
+            # requests:
+              # memory: 1Gi
+              # cpu: 2
+            # limits:
+              # memory: 2Gi
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 5Gi
+  http:
+    service:
+      spec:
+        type: ClusterIP
+    tls:
+      selfSignedCertificate:
+        disabled: true

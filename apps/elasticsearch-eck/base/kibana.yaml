@@ -1,0 +1,36 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana-eck
+spec:
+  version: 7.17.28
+  count: 1
+  # config:
+    # server.basePath: "/kibana"
+    # server.rewriteBasePath: "true"
+  elasticsearchRef:
+    name: elasticsearch-eck
+    namespace: common
+  podTemplate:
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          # requests:
+            # memory: 1Gi
+            # cpu: 0.5
+          # limits:
+            # memory: 2Gi
+            # cpu: 1
+        # readinessProbe:
+          # httpGet:
+            # path: /kibana/login
+            # port: 5601
+            # scheme: HTTP
+  http:
+    service:
+      spec:
+        type: ClusterIP
+    tls:
+      selfSignedCertificate:
+        disabled: true

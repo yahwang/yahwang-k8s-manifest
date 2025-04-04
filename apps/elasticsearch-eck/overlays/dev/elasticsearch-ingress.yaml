@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: elasticsearch-eck
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: es.172.30.1.101.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: dev-elasticsearch-eck-es-http
+            port:
+              number: 9200
+        path: /
+        pathType: Prefix

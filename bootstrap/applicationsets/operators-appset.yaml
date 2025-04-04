@@ -18,7 +18,7 @@ spec:
             server: https://kubernetes.default.svc
             chart_repo: https://helm.elastic.co
             chart_name: eck-operator
-            chart_version: "2.14.0"
+            chart_version: "2.16.1"
           - operator: strimzi-kafka-operator
             env: dev
             server: https://kubernetes.default.svc

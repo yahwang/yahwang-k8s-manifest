@@ -113,11 +113,15 @@ https://github.com/bitnami-labs/sealed-secrets/tree/v0.28.0
 ```
 # 기존 secret으로 yaml 만드는 법
 
-kubectl get secret minio-secret -n common -o yaml | kubeseal --controller-name dev-sealed-secrets --scope namespace-wide -w mysealedsecret.yaml -o yaml
+kubectl get secret minio-secret -n common -o yaml | kubeseal --controller-name dev-sealed-secrets --scope namespace-wide -w sealed-minio-secret.yaml -o yaml
+
+# 새 secret으로 yaml 만드는 법 ( secret 기본 템플릿으로 만든 후 실행 )
+
+cat my-secret.yaml | kubeseal --controller-name dev-sealed-secrets --scope namespace-wide -w sealed-my-secret.yaml -o yaml
 
 # sealed secret 암호화 검증 ( 아무 결과가 없으면 정상 )
 
-kubeseal --controller-name dev-sealed-secrets -f mysealedsecret.yaml --validate
+kubeseal --controller-name dev-sealed-secrets -f sealed-my-secret.yaml --validate
 ```
 
 
@@ -129,7 +133,7 @@ https://github.com/kaasops/vector-operator/tree/main/helm/charts/vector-operator
 
 ## 2. eck-operator
 
-https://github.com/elastic/cloud-on-k8s/tree/v2.14.0/deploy/eck-operator
+https://github.com/elastic/cloud-on-k8s/tree/v2.16.1/deploy/eck-operator
 
 ## 3. strimzi-kafka-operator
 

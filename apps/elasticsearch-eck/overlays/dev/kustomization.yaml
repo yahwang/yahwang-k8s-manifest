@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namePrefix: dev-
+
+resources:
+- ./elasticsearch-patch.yaml
+- ./elasticsearch-ingress.yaml
+- ./kibana-patch.yaml
+- ./kibana-ingress.yaml
