@@ -128,6 +128,11 @@ proxy:
 # singleuser relates to the configuration of KubeSpawner which runs in the hub
 # pod, and its spawning of user pods such as jupyter-myusername.
 singleuser:
+  # https://z2jh.jupyter.org/en/stable/administrator/security.html#allowing-additional-outbound-network-connections-egress
+  networkPolicy:
+    enabled: true
+    egressAllowRules:
+      privateIPs: true
   events: true
   extraAnnotations: {}
   extraLabels:
@@ -139,8 +144,8 @@ singleuser:
   fsGid: 100
   serviceAccountName:
   image:
-    name: jupyter/base-notebook
-    tag: "python-3.11.6"
+    name: quay.io/jupyter/base-notebook
+    tag: "python-3.12"
   storage:
     type: dynamic
     static:
