@@ -49,4 +49,4 @@ yahwang-k8s-manifest/
 
 - keycloak oidc 일부 적용
 
-![Cluster 구성](https://drive.google.com/uc?export=view&id=1UZV67H6AWKgR2nXv0BPZSRNCG_wIZPeO)
+![Cluster 구성](https://drive.google.com/uc?export=view&id=1OV9Pfna_z3KyK1pZ4VpERXu6DV26YRbF)
