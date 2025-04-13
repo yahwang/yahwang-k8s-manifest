@@ -5,6 +5,7 @@
 ```
 yahwang-k8s-manifest/
 ├── apps   
+│   └── datahub
 │   └── jupyterhub
 │   └── kafka-ui
 │   └── strimzi-kafka

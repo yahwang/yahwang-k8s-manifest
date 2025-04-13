@@ -420,14 +420,14 @@ global:
       ## Non-Entity indices do not require the prefix
       # settingsOverrides: '{"graph_service_v1":{"number_of_shards":"5"},"system_metadata_service_v1":{"number_of_shards":"5"}}'
       ## or
-      # settingsOverrides:
-      #   graph_service_v1:
-      #     number_of_shards: '5'
-      #   system_metadata_service_v1:
-      #     number_of_shards: '6'
+      settingsOverrides:
+        graph_service_v1:
+          number_of_shards: '2'
+        system_metadata_service_v1:
+          number_of_shards: '2'
       #
       ## Entity indices do not require the prefix or suffix
-      # entitySettingsOverrides: '{"dataset":{"number_of_shards":"10"}}'
+      entitySettingsOverrides: '{"dataset":{"number_of_shards":"2"}}'
 
       ## The amount of delay between indexing a document and having it returned in queries
       ## Increasing this value can improve performance when ingesting large amounts of data
@@ -596,8 +596,8 @@ global:
       maxPartitionFetchBytes: "5242880"  # 5MB
       stopContainerOnDeserializationError: true
     ## For AWS MSK set this to a number larger than 1
-    # partitions: 3
-    # replicationFactor: 3
+    partitions: 2
+    replicationFactor: 2
     schemaregistry:
       # GMS Implementation - `url` configured based on component context
       type: INTERNAL
