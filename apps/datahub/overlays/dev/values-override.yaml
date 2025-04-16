@@ -81,6 +81,9 @@ datahub-frontend:
   # Optionaly specify service type for datahub-frontend: LoadBalancer, ClusterIP or NodePort, by default: LoadBalancer
     type: ClusterIP
 
+  auth:
+    sessionTTLHours: 1
+
   oidcAuthentication:
     enabled: true
     provider: other
