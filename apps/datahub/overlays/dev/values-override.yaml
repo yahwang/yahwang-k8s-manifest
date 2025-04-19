@@ -10,12 +10,7 @@ datahub-gms:
     # to run
     # command: customCommand
     # args: []
-  resources:
-    limits:
-      memory: 2Gi
-    requests:
-      cpu: 100m
-      memory: 1Gi
+  resources: {}
   livenessProbe:
     initialDelaySeconds: 60
     periodSeconds: 30
@@ -48,12 +43,7 @@ datahub-frontend:
     # to run
     # command: customCommand
     # args: []
-  resources:
-    limits:
-      memory: 1400Mi
-    requests:
-      cpu: 100m
-      memory: 512Mi
+  resources: {}
   # Set up ingress to expose react front-end
   ingress:
     enabled: true
@@ -71,8 +61,8 @@ datahub-frontend:
         hosts:
           - datahub.yahwang.site
     pathType: ImplementationSpecific
-  defaultUserCredentials: 
-    randomAdminPassword: true
+  defaultUserCredentials: {}
+    # randomAdminPassword: true
     # You can also set specific passwords for default users
     # manualValues: |
       # datahub:manualPassword
@@ -83,6 +73,10 @@ datahub-frontend:
 
   auth:
     sessionTTLHours: 1
+
+  extraEnvs:
+    - name: "AUTH_JAAS_ENABLED"
+      value: "false"
 
   oidcAuthentication:
     enabled: true
