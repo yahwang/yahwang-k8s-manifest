@@ -1,0 +1,46 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: airflow
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - matrix:
+        generators:
+          - clusters:
+              selector:
+                matchLabels:
+                  environment: dev
+          - list:
+              elements:
+                - env: dev
+                  chart_repo: https://airflow.apache.org
+                  chart_name: airflow
+                  chart_version: "1.16.0"
+  template:
+    metadata:
+      name: "{{.env}}-airflow"
+    spec:
+      project: common
+      sources:
+        - repoURL: git@github.com:yahwang/yahwang-k8s-manifest.git
+          targetRevision: HEAD
+          ref: values
+        - repoURL: "{{.chart_repo}}"
+          targetRevision: "{{.chart_version}}"
+          chart: "{{.chart_name}}"
+          helm:
+            valueFiles:
+              - "$values/apps/airflow/overlays/{{.env}}/values-override.yaml"
+      destination:
+        server: "{{.server}}"
+        namespace: common
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

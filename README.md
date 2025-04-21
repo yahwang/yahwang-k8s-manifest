@@ -5,6 +5,7 @@
 ```
 yahwang-k8s-manifest/
 ├── apps   
+│   └── airflow
 │   └── datahub
 │   └── jupyterhub
 │   └── kafka-ui
