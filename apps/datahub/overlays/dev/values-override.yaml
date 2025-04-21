@@ -75,6 +75,8 @@ datahub-frontend:
     sessionTTLHours: 1
 
   extraEnvs:
+    - name: "MAX_SESSION_TOKEN_AGE"
+      value: "1h"
     - name: "AUTH_JAAS_ENABLED"
       value: "false"
 
