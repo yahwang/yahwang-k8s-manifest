@@ -662,7 +662,7 @@ global:
       secretKey: "encryption_key_secret"
       # Set to false if you'd like to provide your own secret.
       provisionSecret:
-        enabled: true
+        enabled: false
         autoGenerate: true
         annotations: {}
       # Only specify if autoGenerate set to false
