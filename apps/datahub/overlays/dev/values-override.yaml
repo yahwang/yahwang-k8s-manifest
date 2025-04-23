@@ -688,7 +688,7 @@ global:
           secretKey: "token_service_salt"
       # Set to false if you'd like to provide your own auth secrets
       provisionSecrets:
-        enabled: true
+        enabled: false
         autoGenerate: true
         annotations: {}
       # Only specify if autoGenerate set to false
