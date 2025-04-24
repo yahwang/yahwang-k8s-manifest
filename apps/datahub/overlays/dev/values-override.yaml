@@ -10,7 +10,11 @@ datahub-gms:
     # to run
     # command: customCommand
     # args: []
-  resources: {}
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      memory: 256Mi
   livenessProbe:
     initialDelaySeconds: 60
     periodSeconds: 30
@@ -43,7 +47,11 @@ datahub-frontend:
     # to run
     # command: customCommand
     # args: []
-  resources: {}
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      memory: 256Mi
   # Set up ingress to expose react front-end
   ingress:
     enabled: true
@@ -120,9 +128,8 @@ acryl-datahub-actions:
   #   defaultMode: "0444"
   resources:
     limits:
-      memory: 512Mi
+      memory: 3Gi
     requests:
-      cpu: 300m
       memory: 256Mi
 
 datahub-mae-consumer:
@@ -137,7 +144,6 @@ datahub-mae-consumer:
     limits:
       memory: 1536Mi
     requests:
-      cpu: 100m
       memory: 256Mi
 
 datahub-mce-consumer:
@@ -152,7 +158,6 @@ datahub-mce-consumer:
     limits:
       memory: 1536Mi
     requests:
-      cpu: 100m
       memory: 256Mi
 
 datahub-ingestion-cron:
@@ -172,10 +177,8 @@ elasticsearchSetupJob:
     # args: []
   resources:
     limits:
-      cpu: 500m
-      memory: 512Mi
+      memory: 1024Mi
     requests:
-      cpu: 300m
       memory: 256Mi
   extraInitContainers: []
   podSecurityContext:
@@ -210,10 +213,9 @@ kafkaSetupJob:
     # args: []
   resources:
     limits:
-      cpu: 500m
-      memory: 1024Mi
+      cpu: "2"
+      memory: 2Gi
     requests:
-      cpu: 300m
       memory: 768Mi
   extraInitContainers: []
   podSecurityContext:
@@ -247,10 +249,8 @@ postgresqlSetupJob:
     # args: []
   resources:
     limits:
-      cpu: 500m
       memory: 512Mi
     requests:
-      cpu: 300m
       memory: 256Mi
   extraInitContainers: []
   podSecurityContext:
@@ -366,10 +366,9 @@ datahubSystemUpdate:
   podAnnotations: {}
   resources:
     limits:
-      cpu: 500m
+      cpu: "2"
       memory: 2Gi
     requests:
-      cpu: 300m
       memory: 2Gi
   # Add extra sidecar containers to job pod
   extraSidecars: []
