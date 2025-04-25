@@ -2123,7 +2123,7 @@ logs:
 
   persistence:
     # Enable persistent volume for storing logs
-    enabled: false
+    enabled: true
     # Volume size for logs
     size: 1Gi
     # Annotations for the logs PVC
