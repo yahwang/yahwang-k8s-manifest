@@ -144,8 +144,8 @@ singleuser:
   fsGid: 100
   serviceAccountName:
   image:
-    name: quay.io/jupyter/base-notebook
-    tag: "python-3.12"
+    name: quay.io/jupyter/pyspark-notebook
+    tag: "spark-3.5.3"
   storage:
     type: dynamic
     static:
