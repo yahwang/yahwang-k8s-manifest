@@ -1,0 +1,16 @@
+webhook:
+  create: false
+
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
+
+postStart:
+  exec:
+    command:
+    - /bin/sh 
+    - -c 
+    - |
+      chmod 755 /usr/bin/newgrp
+      chmod 755 /sbin/unix_chkpwd
+      chmod 400 /etc/shadow
