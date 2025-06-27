@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: spark-apps-jmx
+  namespace: spark-jobs
+spec:
+  namespaceSelector:
+    matchNames:
+    - spark-jobs
+  selector:
+    matchExpressions:
+      - key: spark-role
+        operator: In
+        values:
+          - driver
+          - executor
+  podMetricsEndpoints:
+    - port: jmx-exporter
+      path: /metrics
+      interval: 10s

@@ -141,3 +141,7 @@ https://github.com/strimzi/strimzi-kafka-operator/tree/0.43.0/helm-charts/helm3/
 ## 4. minio-operator
 
 https://github.com/minio/operator/tree/v6.0.2/helm/operator
+
+## 5. spark-operator
+
+https://github.com/kubeflow/spark-operator/tree/v2.1.1/charts/spark-operator-chart

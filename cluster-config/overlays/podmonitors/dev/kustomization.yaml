@@ -4,4 +4,5 @@ namePrefix: dev-
 
 resources:
   - ./strimzi-pod-monitor.yaml
-
+  - ./spark-pod-monitor.yaml
+  - ./spark-rolebinding.yaml
