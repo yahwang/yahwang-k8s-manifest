@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "360"
+  name: kafka-bridge-ingress
+  
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kafka-bridge.172.30.1.101.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: kafka-bridge-bridge-service
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix

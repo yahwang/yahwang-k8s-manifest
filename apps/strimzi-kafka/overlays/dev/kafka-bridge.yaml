@@ -1,0 +1,35 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaBridge
+metadata:
+  name: kafka-bridge
+spec:
+  replicas: 1
+  bootstrapServers: "dev-kafka-cluster-kafka-bootstrap.common.svc:9092"
+  enableMetrics: true
+  http: 
+    port: 8080
+    cors: 
+      allowedOrigins: 
+      - ".+"
+      allowedMethods: 
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+      - "PATCH"
+  consumer: 
+    config:
+      auto.offset.reset: earliest
+  producer: 
+    config:
+      delivery.timeout.ms: 300000
+  logging: 
+    type: inline
+    loggers:
+      logger.bridge.level: INFO
+      logger.send.name: "http.openapi.operation.send"
+      logger.send.level: INFO
+  jvmOptions: 
+    "-Xmx": "512m"
+    "-Xms": "512m"

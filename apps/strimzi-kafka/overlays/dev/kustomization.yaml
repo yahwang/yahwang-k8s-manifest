@@ -6,4 +6,5 @@ resources:
   - ./kafka.yaml
   - ./nodepool-patch.yaml
   - ./kafka-metrics.yaml
-
+  - ./kafka-bridge.yaml
+  - ./kafka-bridge-ingress.yaml
