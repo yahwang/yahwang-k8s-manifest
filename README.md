@@ -52,3 +52,28 @@ yahwang-k8s-manifest/
 - keycloak oidc 일부 적용
 
 ![Cluster 구성](https://drive.google.com/uc?export=view&id=1OV9Pfna_z3KyK1pZ4VpERXu6DV26YRbF)
+
+## 참고
+
+- 싱글 노드의 maxPods 개수 변경
+
+k9s로 node describe를 보면 기본 값이 노드당 110개 POD 제한을 알 수 있음
+
+```
+Capacity:
+    ...
+    pods: 110
+```
+
+```
+# sudo vim /var/lib/kubelet/config.yaml
+
+maxPods: 200 # 추가
+```
+
+수정 후 kubelet 재시작
+
+```
+sudo systemctl restart kubelet
+```
+
