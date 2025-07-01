@@ -145,3 +145,5 @@ https://github.com/minio/operator/tree/v6.0.2/helm/operator
 ## 5. spark-operator
 
 https://github.com/kubeflow/spark-operator/tree/v2.1.1/charts/spark-operator-chart
+
+https://www.kubeflow.org/docs/components/spark-operator/user-guide/
