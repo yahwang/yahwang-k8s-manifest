@@ -17,7 +17,7 @@ yamlApplicationConfig:
     clusters:
       - name: dev-kafka-cluster
         bootstrapServers: dev-kafka-cluster-kafka-bootstrap.common.svc.cluster.local:9092
-        # schemaRegistry: http://192.168.1.230:8085
+        schemaRegistry: http://schema-registry.common.svc:8081
   # kafka:
   #   clusters:
   #     - name: yaml
