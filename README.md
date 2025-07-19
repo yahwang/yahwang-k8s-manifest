@@ -9,6 +9,7 @@ yahwang-k8s-manifest/
 │   └── datahub
 │   └── jupyterhub
 │   └── kafka-ui
+│   └── schema-registry
 │   └── strimzi-kafka
 │   └── elasticsearch-eck
 ├── bootstrap
