@@ -124,6 +124,10 @@ cat my-secret.yaml | kubeseal --controller-name dev-sealed-secrets --scope names
 kubeseal --controller-name dev-sealed-secrets -f sealed-my-secret.yaml --validate
 ```
 
+### 11. Nessie
+
+https://github.com/projectnessie/nessie/tree/nessie-0.104.3/helm/nessie
+
 # operators
 
 ## 1. vector-operator

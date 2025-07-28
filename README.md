@@ -25,6 +25,7 @@ yahwang-k8s-manifest/
 │   │   └── jenkins
 │   │   └── keycloak
 │   │   └── loki
+│   │   └── nessie
 │   │   └── operators        # operator 관리
 │   │   └── prometheus
 │   │   └── redis
@@ -52,7 +53,7 @@ yahwang-k8s-manifest/
 
 - keycloak oidc 일부 적용
 
-![Cluster 구성](https://drive.google.com/uc?export=view&id=1OV9Pfna_z3KyK1pZ4VpERXu6DV26YRbF)
+![Cluster 구성](https://drive.usercontent.google.com/download?id=1OV9Pfna_z3KyK1pZ4VpERXu6DV26YRbF)
 
 ## 참고
 
