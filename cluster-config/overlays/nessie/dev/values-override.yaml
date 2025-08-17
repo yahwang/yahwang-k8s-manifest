@@ -194,7 +194,7 @@ catalog:
         region: ap-northeast-2  # us-west-2
         # -- Endpoint URI, required for private clouds. Optional; if not provided, the default is
         # used.
-        endpoint: http://minio.common.svc:80  # "https://bucket1.s3.amazonaws.com"
+        endpoint: http://minio-api.172.30.1.101.nip.io:80  # "https://bucket1.s3.amazonaws.com"
         # -- Endpoint URI, required for private clouds. Optional; if not provided, the default is
         # used. If the endpoint URIs for the Nessie server and clients differ, this one defines the
         # endpoint used for the Nessie server.
