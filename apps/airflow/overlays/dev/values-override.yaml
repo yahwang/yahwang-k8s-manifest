@@ -58,8 +58,8 @@ airflowVersion: "2.10.5"
 # Images
 images:
   airflow:
-    repository: ~
-    tag: ~
+    repository: harbor.yahwang.site/platform/airflow
+    tag: "2.10.5-custom"
     # Specifying digest takes precedence over tag.
     digest: ~
     pullPolicy: IfNotPresent
@@ -67,7 +67,7 @@ images:
   # all the 'run-airflow-migrations' and 'wait-for-airflow-migrations' containers/jobs
   # will use the images from 'defaultAirflowRepository:defaultAirflowTag' values
   # to run and wait for DB migrations .
-  useDefaultImageForMigration: false
+  useDefaultImageForMigration: true  # 커스텀 이미지를 사용할 경우, true로 변경
   # timeout (in seconds) for airflow-migrations to complete
   migrationsWaitTimeout: 60
   pod_template:
@@ -1810,7 +1810,7 @@ redis:
 # Auth secret for a private registry
 # This is used if pulling airflow images from a private registry
 registry:
-  secretName: ~
+  secretName: harbor-registry
 
   # Example:
   # connection:
