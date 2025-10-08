@@ -7,7 +7,7 @@ expose:
       secretName: harbor-letsencrypt-tls
   ingress:
     hosts:
-      core: harbor.yahwang.site
+      core: harbor.yahwang.cloud
     controller: default
     className: nginx
     annotations:
@@ -26,7 +26,7 @@ persistence:
       bucket: harbor-image
       regionendpoint: http://minio.common.svc.cluster.local:80
 
-externalURL: https://harbor.yahwang.site # http 혹은 https를 붙임
+externalURL: https://harbor.yahwang.cloud # http 혹은 https를 붙임
 
 existingSecretAdminPassword: harbor-admin-secret
 

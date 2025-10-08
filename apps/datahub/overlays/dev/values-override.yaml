@@ -61,13 +61,13 @@ datahub-frontend:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     className: "nginx"
     hosts:
-      - host: datahub.yahwang.site
+      - host: datahub.yahwang.cloud
         paths: ["/"]
         redirectPaths: []
     tls:
       - secretName: datahub-letsencrypt-tls
         hosts:
-          - datahub.yahwang.site
+          - datahub.yahwang.cloud
     pathType: ImplementationSpecific
   defaultUserCredentials: {}
     # randomAdminPassword: true
@@ -99,7 +99,7 @@ datahub-frontend:
       secretRef: datahub-oauth-secret
       secretKey: OAUTH_CLIENT_SECRET
     # only needed if provider is `other`
-    discoveryUri: https://keycloak.yahwang.site/realms/dev-tools/.well-known/openid-configuration
+    discoveryUri: https://keycloak.yahwang.cloud/realms/dev-tools/.well-known/openid-configuration
     # only needed if provider is `okta`
     # oktaDomain: your-okta-domain.com
 

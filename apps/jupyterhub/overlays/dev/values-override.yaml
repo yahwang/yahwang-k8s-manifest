@@ -15,10 +15,10 @@ hub:
       authenticator_class: "generic-oauth"
     GenericOAuthenticator:
       login_service: keycloak
-      oauth_callback_url: "https://jupyterhub.yahwang.site/hub/oauth_callback"
-      authorize_url: "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect/auth"
-      token_url: "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect/token"
-      userdata_url: "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect/userinfo"
+      oauth_callback_url: "https://jupyterhub.yahwang.cloud/hub/oauth_callback"
+      authorize_url: "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect/auth"
+      token_url: "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect/token"
+      userdata_url: "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect/userinfo"
       scope: ["openid", "email", "groups"]
       username_claim: "preferred_username"
       manage_groups: true
@@ -192,12 +192,12 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-body-size: "1g"
   ingressClassName: nginx
   hosts: 
-    - jupyterhub.yahwang.site
+    - jupyterhub.yahwang.cloud
   pathSuffix:
   pathType: Prefix
   tls:
     - hosts:
-        - jupyterhub.yahwang.site
+        - jupyterhub.yahwang.cloud
       secretName: jupyterhub-letsencrypt-tls
   extraPaths: []
 

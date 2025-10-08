@@ -108,7 +108,7 @@ ingress:
   controller: default
   ## @param ingress.hostname Default host for the ingress record (evaluated as template)
   ##
-  hostname: keycloak.yahwang.site
+  hostname: keycloak.yahwang.cloud
   hostnameStrict: false
   path: "{{ .Values.httpRelativePath }}"
   servicePort: http
@@ -122,7 +122,7 @@ ingress:
   extraPaths: []
   extraTls:
     - hosts:
-      - keycloak.yahwang.site
+      - keycloak.yahwang.cloud
       secretName: keycloak-letsencrypt-tls
  
   extraRules: []

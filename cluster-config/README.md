@@ -13,7 +13,7 @@ https://velog.io/@lijahong/0%EB%B6%80%ED%84%B0-%EC%8B%9C%EC%9E%91%ED%95%98%EB%8A
 ```
 kubectl create secret docker-registry harbor-registry \
     --namespace common \
-    --docker-server=https://harbor.yahwang.site \
+    --docker-server=https://harbor.yahwang.cloud \
     --docker-username=your-username \
     --docker-password=your-password
 ```

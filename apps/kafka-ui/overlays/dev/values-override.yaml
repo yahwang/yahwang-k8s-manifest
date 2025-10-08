@@ -93,7 +93,7 @@ ingress:
   ingressClassName: "nginx"
   path: "/"
   pathType: "Prefix"  
-  host: "kafka-ui.yahwang.site"
+  host: "kafka-ui.yahwang.cloud"
 
   # configs for Ingress TLS
   tls:

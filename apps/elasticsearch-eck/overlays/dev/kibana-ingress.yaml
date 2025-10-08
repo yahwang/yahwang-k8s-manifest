@@ -18,7 +18,7 @@ spec:
               number: 5601
         path: /
         pathType: Prefix
-  - host: kibana.yahwang.site
+  - host: kibana.yahwang.cloud
     http:
       paths:
       - backend:
@@ -30,5 +30,5 @@ spec:
         pathType: Prefix
   tls:
   - hosts:
-    - kibana.yahwang.site
+    - kibana.yahwang.cloud
     secretName: kibana-letsencrypt-tls

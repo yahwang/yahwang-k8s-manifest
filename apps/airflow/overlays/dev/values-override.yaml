@@ -58,7 +58,7 @@ airflowVersion: "2.10.5"
 # Images
 images:
   airflow:
-    repository: harbor.yahwang.site/platform/airflow
+    repository: harbor.yahwang.cloud/platform/airflow
     tag: "2.10.5-custom"
     # Specifying digest takes precedence over tag.
     digest: ~
@@ -137,7 +137,7 @@ ingress:
 
     # The hostnames or hosts configuration for the web Ingress
     hosts:
-      - name: "airflow.yahwang.site"
+      - name: "airflow.yahwang.cloud"
         tls:
           enabled: true
           secretName: airflow-letsencrypt-tls

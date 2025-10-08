@@ -44,7 +44,7 @@ data:
     AUTH_ROLES_SYNC_AT_LOGIN = True
     AUTH_USER_REGISTRATION_ROLE = "Admin" # 유저 최초 로그인 시 역할 지정
     PERMANENT_SESSION_LIFETIME = 3600
-    OIDC_ISSUER = "https://keycloak.yahwang.site/realms/dev-tools"
+    OIDC_ISSUER = "https://keycloak.yahwang.cloud/realms/dev-tools"
 
     OAUTH_PROVIDERS = [
         {
@@ -54,11 +54,11 @@ data:
             "remote_app": {
                 "client_id": "airflow",
                 "client_secret": ".........................",
-                "server_metadata_url": "https://keycloak.yahwang.site/realms/dev-tools/.well-known/openid-configuration",
-                "api_base_url": "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect",
+                "server_metadata_url": "https://keycloak.yahwang.cloud/realms/dev-tools/.well-known/openid-configuration",
+                "api_base_url": "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect",
                 "client_kwargs": {"scope": "openid email profile"},
-                "access_token_url": "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect/token",
-                "authorize_url": "https://keycloak.yahwang.site/realms/dev-tools/protocol/openid-connect/auth",
+                "access_token_url": "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect/token",
+                "authorize_url": "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect/auth",
                 "request_token_url": None,
             },
         }
