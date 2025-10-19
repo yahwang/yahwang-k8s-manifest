@@ -21,7 +21,7 @@ diagnosticMode:
 
 image:
   registry: docker.io
-  repository: bitnami/keycloak
+  repository: bitnamilegacy/keycloak
   tag: 26.0.6-debian-12-r0
   digest: ""
   pullPolicy: IfNotPresent
