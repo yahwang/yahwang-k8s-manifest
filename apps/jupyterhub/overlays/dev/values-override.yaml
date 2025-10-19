@@ -19,13 +19,13 @@ hub:
       authorize_url: "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect/auth"
       token_url: "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect/token"
       userdata_url: "https://keycloak.yahwang.cloud/realms/dev-tools/protocol/openid-connect/userinfo"
-      scope: ["openid", "email", "groups"]
+      scope: ["openid", "email"]
       username_claim: "preferred_username"
-      manage_groups: true
-      allowed_groups:
-        - DevToolAdmins
-      admin_groups:
-        - DevToolAdmins
+      manage_groups: false
+      # allowed_groups:
+        # - DevToolAdmins
+      # admin_groups:
+        # - DevToolAdmins
   service:
     type: ClusterIP
   baseUrl: /
