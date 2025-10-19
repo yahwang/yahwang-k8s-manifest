@@ -177,7 +177,7 @@ singleuser:
 # scheduling relates to the user-scheduler pods and user-placeholder pods.
 scheduling:
   userScheduler:
-    enabled: true
+    enabled: false
     replicas: 1
   podPriority:
     enabled: false
