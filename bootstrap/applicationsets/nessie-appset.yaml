@@ -40,7 +40,7 @@ spec:
         namespace: common
       syncPolicy:
         automated:
-          prune: true
+          # prune: true
           selfHeal: true
         syncOptions: 
           - ServerSideApply=true # Too long: must have at most 262144 bytes 이슈 해결

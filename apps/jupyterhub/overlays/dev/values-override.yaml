@@ -145,7 +145,7 @@ singleuser:
   serviceAccountName:
   image:
     name: quay.io/jupyter/pyspark-notebook
-    tag: "spark-3.5.3"
+    tag: "spark-3.3.2"
   storage:
     type: dynamic
     static:
