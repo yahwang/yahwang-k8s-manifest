@@ -144,7 +144,7 @@ singleuser:
   fsGid: 100
   serviceAccountName:
   image:
-    name: quay.io/jupyter/pyspark-notebook
+    name: docker.io/jupyter/pyspark-notebook # 최신 버전은 quay.io/jupyter/pyspark-notebook
     tag: "spark-3.3.2"
   storage:
     type: dynamic
@@ -177,7 +177,7 @@ singleuser:
 # scheduling relates to the user-scheduler pods and user-placeholder pods.
 scheduling:
   userScheduler:
-    enabled: false
+    enabled: false # cluster에서 배포 시 권한 문제가 생김
     replicas: 1
   podPriority:
     enabled: false
