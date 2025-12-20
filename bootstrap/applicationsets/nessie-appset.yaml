@@ -41,7 +41,7 @@ spec:
       syncPolicy:
         automated:
           # prune: true
-          selfHeal: true
+          # selfHeal: true
         syncOptions: 
           - ServerSideApply=true # Too long: must have at most 262144 bytes 이슈 해결
           - CreateNamespace=true

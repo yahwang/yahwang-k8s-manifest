@@ -18,7 +18,7 @@ spec:
                 - env: dev
                   chart_repo: registry-1.docker.io/bitnamicharts
                   chart_name: schema-registry
-                  chart_version: "25.1.9"
+                  chart_version: "26.0.5"
         
   template:
     metadata:

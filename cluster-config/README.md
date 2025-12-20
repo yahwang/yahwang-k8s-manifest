@@ -147,3 +147,13 @@ https://github.com/minio/operator/tree/v6.0.2/helm/operator
 https://github.com/kubeflow/spark-operator/tree/v2.1.1/charts/spark-operator-chart
 
 https://www.kubeflow.org/docs/components/spark-operator/user-guide/
+
+### Spark CRD 수동 설치
+
+권한 이슈로 hook으로 설치가 안 됨. 버전 변경 시 맞게 다시 설치 필요
+
+```
+kubectl apply -f https://raw.githubusercontent.com/kubeflow/spark-operator/refs/tags/v2.2.1/charts/spark-operator-chart/crds/sparkoperator.k8s.io_scheduledsparkapplications.yaml --server-side
+
+kubectl apply -f https://raw.githubusercontent.com/kubeflow/spark-operator/refs/tags/v2.2.1/charts/spark-operator-chart/crds/sparkoperator.k8s.io_sparkapplications.yaml --server-side
+```
