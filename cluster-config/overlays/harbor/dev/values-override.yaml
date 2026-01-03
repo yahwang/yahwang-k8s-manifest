@@ -45,6 +45,6 @@ database:
 redis:
   type: external
   external:
-    addr: "dev-redis-master.cluster-config.svc.cluster.local:6379"
+    addr: "redis-master.cluster-config.svc.cluster.local:6379"
 
 logLevel: warning
