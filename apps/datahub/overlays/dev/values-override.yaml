@@ -107,7 +107,24 @@ datahub-frontend:
     - name: "MAX_SESSION_TOKEN_AGE"
       value: "1h"
     - name: "AUTH_JAAS_ENABLED"
+      value: "false"
+    - name: AUTH_OIDC_ENABLED
       value: "true"
+    - name: AUTH_OIDC_CLIENT_ID
+      value: "datahub"
+    - name: AUTH_OIDC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: datahub-oauth-secret
+          key: OAUTH_CLIENT_SECRET
+    - name: AUTH_OIDC_DISCOVERY_URI
+      value: "https://keycloak.yahwang.cloud/realms/dev-tools/.well-known/openid-configuration"
+    - name: AUTH_OIDC_BASE_URL
+      value: "https://datahub.yahwang.cloud"
+    - name: AUTH_OIDC_SCOPE
+      value: "openid profile email"
+    - name: AUTH_OIDC_USER_NAME_CLAIM
+      value: "email"
 
 acryl-datahub-actions:
   enabled: true
