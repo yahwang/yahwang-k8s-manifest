@@ -1,4 +1,4 @@
-https://github.com/acryldata/datahub-helm/tree/datahub-0.5.13
+https://github.com/acryldata/datahub-helm/tree/datahub-0.8.0
 
 ### datahub 유저 패스워드 확인
 

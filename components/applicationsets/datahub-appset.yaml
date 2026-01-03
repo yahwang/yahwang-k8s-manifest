@@ -19,7 +19,7 @@ spec:
                 - env: dev
                   chart_repo: https://helm.datahubproject.io/
                   chart_name: datahub
-                  chart_version: "0.5.13"
+                  chart_version: "0.8.0"
   template:
     metadata:
       name: "{{.env}}-datahub"
