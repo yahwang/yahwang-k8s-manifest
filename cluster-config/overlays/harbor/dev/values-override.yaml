@@ -24,7 +24,7 @@ persistence:
       existingSecret: harbor-s3-secret
       region: ap-northeast-2
       bucket: harbor-image
-      regionendpoint: http://minio.common.svc.cluster.local:80
+      regionendpoint: https://minio.minio-system.svc
 
 externalURL: https://harbor.yahwang.cloud # http 혹은 https를 붙임
 
