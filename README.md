@@ -32,6 +32,9 @@ yahwang-k8s-manifest/
 │   └── sealed-secrets       # sealed-secrets + reflector를 통한 시크릿 관리
 │   └── pvcs                 # 볼륨 고정을 위한 pvc 미리 생성
 │   └── README.md            # cluster-config 설정 관련 문서
+├── common
+│   └── overlays
+│   │   └── nessie
 └── components
 │   └── applicationsets      # apps 배포
 │   └── appset-template.yaml # apps 배포 템플릿

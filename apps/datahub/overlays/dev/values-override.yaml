@@ -657,11 +657,11 @@ global:
       enabled: true
 
     encryptionKey:
-      secretRef: "datahub-encryption-secrets"
-      secretKey: "encryption_key_secret"
+      secretRef: ""
+      secretKey: ""
       # Set to false if you'd like to provide your own secret.
       provisionSecret:
-        enabled: false
+        enabled: true
         autoGenerate: true
         annotations: {}
       # Only specify if autoGenerate set to false
@@ -687,7 +687,7 @@ global:
           secretKey: "token_service_salt"
       # Set to false if you'd like to provide your own auth secrets
       provisionSecrets:
-        enabled: false
+        enabled: true
         autoGenerate: true
         annotations: {}
       # Only specify if autoGenerate set to false
