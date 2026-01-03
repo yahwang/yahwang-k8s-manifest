@@ -89,7 +89,7 @@ datahub-frontend:
       value: "false"
 
   oidcAuthentication:
-    enabled: true
+    enabled: false
     provider: other
 
     clientId: datahub
@@ -128,7 +128,7 @@ acryl-datahub-actions:
   #   defaultMode: "0444"
   resources:
     limits:
-      memory: 3Gi
+      memory: 1Gi
     requests:
       memory: 256Mi
 
