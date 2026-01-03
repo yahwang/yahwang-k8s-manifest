@@ -89,7 +89,7 @@ datahub-frontend:
       value: "false"
 
   oidcAuthentication:
-    enabled: false
+    enabled: true
     provider: other
 
     clientId: datahub
@@ -657,8 +657,8 @@ global:
       enabled: true
 
     encryptionKey:
-      secretRef: ""
-      secretKey: ""
+      secretRef: "datahub-encryption-secrets"
+      secretKey: "encryption_key_secret"
       # Set to false if you'd like to provide your own secret.
       provisionSecret:
         enabled: true
@@ -673,7 +673,7 @@ global:
       defaultCliVersion: "1.0.0"
 
     metadata_service_authentication:
-      enabled: true
+      enabled: false
       systemClientId: "__datahub_system"
       systemClientSecret:
         secretRef: "datahub-auth-secrets"
