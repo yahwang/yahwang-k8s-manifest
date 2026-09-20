@@ -166,7 +166,7 @@ ingress:
   pathType: Prefix
 
   hosts:
-    - grafana.yahwang.cloud
+    - grafana.yahwang.site
   extraPaths: []
   # - path: /*
   #   backend:
@@ -185,7 +185,7 @@ ingress:
   tls:
    - secretName: grafana-letsencrypt-tls
      hosts:
-       - grafana.yahwang.cloud
+       - grafana.yahwang.site
 
 resources: {}
 
@@ -398,7 +398,7 @@ grafana.ini:
     mode: console
   server:
     domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ tpl (.Values.ingress.hosts | first) . }}{{ else }}''{{ end }}"
-    root_url: "https://grafana.yahwang.cloud"
+    root_url: "https://grafana.yahwang.site"
 ## grafana Authentication can be enabled with the following values on grafana.ini
  # server:
       # The full public facing url you use in browser, used for redirects and emails

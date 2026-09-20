@@ -56,11 +56,11 @@ controller:
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    hostName: jenkins.yahwang.cloud 
+    hostName: jenkins.yahwang.site 
     tls:
       - secretName: jenkins-letsencrypt-tls
         hosts:
-          - jenkins.yahwang.cloud
+          - jenkins.yahwang.site
 
   sidecars:
     configAutoReload:

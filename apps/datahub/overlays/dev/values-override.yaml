@@ -82,13 +82,13 @@ datahub-frontend:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     className: "nginx"
     hosts:
-      - host: datahub.yahwang.cloud
+      - host: datahub.yahwang.site
         paths: ["/"]
         redirectPaths: []
     tls:
       - secretName: datahub-letsencrypt-tls
         hosts:
-          - datahub.yahwang.cloud
+          - datahub.yahwang.site
     pathType: ImplementationSpecific
   defaultUserCredentials:
     randomAdminPassword: true # AUTH_JAAS_ENABLED true인 지 확인
@@ -118,9 +118,9 @@ datahub-frontend:
           name: datahub-oauth-secret
           key: OAUTH_CLIENT_SECRET
     - name: AUTH_OIDC_DISCOVERY_URI
-      value: "https://keycloak.yahwang.cloud/realms/dev-tools/.well-known/openid-configuration"
+      value: "https://keycloak.yahwang.site/realms/dev-tools/.well-known/openid-configuration"
     - name: AUTH_OIDC_BASE_URL
-      value: "https://datahub.yahwang.cloud"
+      value: "https://datahub.yahwang.site"
     - name: AUTH_OIDC_SCOPE
       value: "openid profile email"
     - name: AUTH_OIDC_USER_NAME_CLAIM
