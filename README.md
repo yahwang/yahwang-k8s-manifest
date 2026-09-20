@@ -21,7 +21,6 @@ yahwang-k8s-manifest/
 │   │   └── cert-manager
 │   │   └── grafana
 │   │   └── harbor
-│   │   └── ingress-nginx
 │   │   └── jenkins
 │   │   └── keycloak
 │   │   └── loki
