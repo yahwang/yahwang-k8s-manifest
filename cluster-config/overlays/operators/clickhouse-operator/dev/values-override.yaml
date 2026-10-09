@@ -1,0 +1,30 @@
+watchNamespaces: ["^clickhouse$"]
+
+crdHook:
+  enabled: false
+
+# ClickHouse 메트릭 수집 방식은 두 가지가 있음
+#
+# 1. operator의 metrics-exporter 사용 (현재 설정)
+#    - operator 파드 안의 metrics-exporter 컨테이너가 각 ClickHouse에 HTTP(8123)로 접속해
+#      system.metrics / events / asynchronous_metrics, parts, disks, replication 상태 등을 SQL로 조회해서 노출
+#    - CHI별 설정 없이 operator가 관리하는 모든 CHI가 자동 수집됨
+#    - operator 파드가 내려가면 ClickHouse 메트릭도 끊기고, scrape마다 ClickHouse에 조회 쿼리가 들어감
+#    - ServiceMonitor endpoint
+#      - ch-metrics(8888): metrics-exporter가 수집한 ClickHouse 메트릭
+#      - op-metrics(9999): operator 자체 메트릭 (reconcile 등), 항상 포함됨
+#
+# 2. ClickHouse 자체 Prometheus endpoint 사용 (CHI마다 설정)
+#    - CHI spec.configuration.settings에 prometheus 섹션을 켜서 각 파드가 9363 포트로 직접 노출
+#        prometheus/endpoint: /metrics
+#        prometheus/port: 9363
+#        prometheus/metrics: true
+#        prometheus/events: true
+#        prometheus/asynchronous_metrics: true
+#    - 9363 포트를 podTemplate에 열고 PodMonitor를 직접 만들어서 수집
+#    - operator와 무관하게 동작하지만 CHI마다 설정 필요
+#    - 이 방식만 쓸 거면 metrics.enabled: false로 exporter를 끌 수 있음
+#
+# Prometheus가 모든 네임스페이스의 ServiceMonitor를 라벨 조건 없이 수집하므로 additionalLabels 불필요
+serviceMonitor:
+  enabled: true
